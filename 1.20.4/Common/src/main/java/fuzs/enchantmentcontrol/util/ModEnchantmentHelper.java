@@ -1,5 +1,6 @@
 package fuzs.enchantmentcontrol.util;
 
+import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -44,6 +45,7 @@ public class ModEnchantmentHelper {
 
         itemStack.removeTagKey(ItemStack.TAG_ENCH);
         itemStack.removeTagKey(EnchantedBookItem.TAG_STORED_ENCHANTMENTS);
+        // this will turn enchanted books into normal books if there are no enchantments left
         itemStack = getEnchantedStack(itemStack, !listTag.isEmpty());
 
         if (!listTag.isEmpty()) {
@@ -68,5 +70,12 @@ public class ModEnchantmentHelper {
             newStack.setTag(tag.copy());
         }
         return newStack;
+    }
+
+    public static boolean isBookWithDisabledEnchantments(ItemStack itemStack) {
+        return itemStack.is(Items.ENCHANTED_BOOK) && getEnchantments(itemStack).keySet().removeIf(enchantment -> {
+            // just a wacky compact syntax, we don't need to actually remove anything here
+            return !((EnchantmentFeature) enchantment).isEnabled();
+        });
     }
 }

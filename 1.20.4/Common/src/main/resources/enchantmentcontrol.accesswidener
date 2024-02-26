@@ -1,0 +1,6 @@
+accessWidener   v2  named
+accessible  field   net/minecraft/world/item/enchantment/Enchantment    slots   [Lnet/minecraft/world/entity/EquipmentSlot;
+mutable field   net/minecraft/world/item/enchantment/Enchantment    slots   [Lnet/minecraft/world/entity/EquipmentSlot;
+accessible  field   net/minecraft/world/item/enchantment/Enchantment    rarity  Lnet/minecraft/world/item/enchantment/Enchantment$Rarity;
+mutable field   net/minecraft/world/item/enchantment/Enchantment    rarity  Lnet/minecraft/world/item/enchantment/Enchantment$Rarity;
+mutable field   net/minecraft/world/item/enchantment/Enchantment    category    Lnet/minecraft/world/item/enchantment/EnchantmentCategory;
