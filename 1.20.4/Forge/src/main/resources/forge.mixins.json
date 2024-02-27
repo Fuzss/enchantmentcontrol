@@ -5,6 +5,7 @@
   "package": "${modGroup}.forge.mixin",
   "plugin": "${modGroup}.forge.mixin.MixinConfigPluginImpl",
   "mixins": [
+    "EnchantmentHelperForgeMixin"
   ],
   "client": [
   ],

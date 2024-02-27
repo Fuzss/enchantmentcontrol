@@ -2,51 +2,59 @@ package fuzs.enchantmentcontrol.handler;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import fuzs.enchantmentcontrol.EnchantmentControl;
+import com.mojang.logging.LogUtils;
 import fuzs.puzzleslib.api.core.v1.ModLoaderEnvironment;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.enchantment.Enchantment;
+import org.slf4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public final class EnchantmentClassesCache {
-    public static final Path CACHE_FILE_PATH = ModLoaderEnvironment.INSTANCE.getConfigDirectory()
-            .resolve("." + EnchantmentControl.MOD_ID + "cache");
+    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Path CACHE_FILE_PATH = ModLoaderEnvironment.INSTANCE.getGameDirectory()
+            .resolve("." + "enchantmentcontrol" + "cache");
+    private static final String KEY_MAPPINGS = "namespace:";
+    private static boolean failedLoad;
+
+    public static boolean isFailedLoad() {
+        return failedLoad;
+    }
 
     public static void save() {
         try {
             try (PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(CACHE_FILE_PATH.toFile()),
                     StandardCharsets.UTF_8
             ))) {
+                printWriter.println(KEY_MAPPINGS + ModLoaderEnvironment.INSTANCE.getCurrentMappingsNamespace());
                 getAllEnchantmentClassNames().forEach(printWriter::println);
             }
         } catch (Exception exception) {
-            EnchantmentControl.LOGGER.error("Failed to save file at " + CACHE_FILE_PATH, exception);
+            LOGGER.error("Failed to save file at " + CACHE_FILE_PATH, exception);
         }
     }
 
     public static List<String> load() {
         try {
             if (CACHE_FILE_PATH.toFile().exists()) {
-                try (BufferedReader bufferedReader = Files.newReader(CACHE_FILE_PATH.toFile(),
-                        Charsets.UTF_8
-                )) {
-                    return bufferedReader.lines().toList();
+                try (BufferedReader bufferedReader = Files.newReader(CACHE_FILE_PATH.toFile(), Charsets.UTF_8)) {
+                    return bufferedReader.lines().filter(EnchantmentClassesCache::filterCachedLines).toList();
                 }
+            } else {
+                throw new FileNotFoundException();
             }
         } catch (Throwable throwable) {
-            EnchantmentControl.LOGGER.warn("Failed to load file at " + CACHE_FILE_PATH, throwable);
+            LOGGER.error("Failed to load file at " + CACHE_FILE_PATH, throwable);
         }
 
+        failedLoad = true;
         return Collections.emptyList();
     }
 
@@ -77,6 +85,20 @@ public final class EnchantmentClassesCache {
         while (clazz != Enchantment.class) {
             consumer.accept(clazz);
             clazz = clazz.getSuperclass();
+        }
+    }
+
+    private static boolean filterCachedLines(String line) throws IllegalStateException {
+        if (line.startsWith(KEY_MAPPINGS)) {
+            String s = line.substring(KEY_MAPPINGS.length());
+            String mappingsNamespace = ModLoaderEnvironment.INSTANCE.getCurrentMappingsNamespace();
+            if (!Objects.equals(s, mappingsNamespace)) {
+                throw new IllegalStateException("Invalid mapping namespace " + s + ", expected " + mappingsNamespace);
+            } else {
+                return false;
+            }
+        } else {
+            return true;
         }
     }
 }

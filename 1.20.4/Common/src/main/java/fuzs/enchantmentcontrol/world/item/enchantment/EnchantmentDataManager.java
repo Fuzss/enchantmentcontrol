@@ -13,9 +13,8 @@ import java.util.Objects;
 
 public final class EnchantmentDataManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder().create();
-    public static final EnchantmentDataManager INSTANCE = new EnchantmentDataManager();
 
-    private EnchantmentDataManager() {
+    public EnchantmentDataManager() {
         super(GSON, "enchantments");
     }
 
@@ -26,7 +25,7 @@ public final class EnchantmentDataManager extends SimpleJsonResourceReloadListen
             Objects.requireNonNull(holder, "holder is null");
             JsonElement jsonElement = object.get(holder.getResourceLocation());
             Objects.requireNonNull(jsonElement, "enchantment data for " + holder.getResourceLocation() + " is null");
-            holder.initNewValues(EnchantmentData.fromJson(jsonElement));
+            holder.initNewValues(DataBasedEnchantmentComponent.fromJson(holder.getEnchantment(), jsonElement));
         }
     }
 }

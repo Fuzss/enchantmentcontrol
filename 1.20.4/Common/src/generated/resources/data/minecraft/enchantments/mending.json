@@ -1,0 +1,13 @@
+{
+  "max_level": 8,
+  "min_level": 1,
+  "rarity": "RARE",
+  "slots": [
+    "MAINHAND",
+    "OFFHAND",
+    "FEET",
+    "LEGS",
+    "CHEST",
+    "HEAD"
+  ]
+}

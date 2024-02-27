@@ -1,4 +1,4 @@
-package fuzs.enchantmentcontrol.fabric.mixin;
+package fuzs.enchantmentcontrol.neoforge.mixin;
 
 import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
 import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentHolder;
@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * subpackage.
  */
 @Mixin(Enchantment.class)
-abstract class EnchantmentFabricMixin implements EnchantmentFeature {
+abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
 
     @SuppressWarnings("target")
     @Inject(

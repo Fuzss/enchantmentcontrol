@@ -29,7 +29,7 @@ public final class EnchantmentHolder {
     private final TagKey<Item> enchantingTableItemTag;
     private final TagKey<Item> anvilItemTag;
     private final TagKey<Enchantment> incompatibleEnchantmentTag;
-    private EnchantmentData enchantmentData;
+    private DataBasedEnchantmentComponent dataBasedEnchantmentComponent;
 
     public EnchantmentHolder(Holder.Reference<Enchantment> holder) {
         Enchantment enchantment = holder.value();
@@ -87,8 +87,8 @@ public final class EnchantmentHolder {
         return this.incompatibleEnchantmentTag;
     }
 
-    public EnchantmentData getEnchantmentData() {
-        return this.enchantmentData;
+    public DataBasedEnchantmentComponent getEnchantmentData() {
+        return this.dataBasedEnchantmentComponent;
     }
 
     public boolean isCompatibleWith(EnchantmentHolder holder) {
@@ -142,10 +142,10 @@ public final class EnchantmentHolder {
         ((EnchantmentFeature) this.getEnchantment()).setHolder(null);
     }
 
-    public void initNewValues(EnchantmentData enchantmentData) {
-        this.enchantmentData = enchantmentData;
-        this.getEnchantment().rarity = enchantmentData.rarity();
-        this.getEnchantment().slots = enchantmentData.equipmentSlots();
+    public void initNewValues(DataBasedEnchantmentComponent dataBasedEnchantmentComponent) {
+        this.dataBasedEnchantmentComponent = dataBasedEnchantmentComponent;
+        this.getEnchantment().rarity = dataBasedEnchantmentComponent.rarity();
+        this.getEnchantment().slots = dataBasedEnchantmentComponent.equipmentSlots();
         this.getEnchantment().category = this.getPerEnchantmentCategory();
         ((EnchantmentFeature) this.getEnchantment()).setHolder(this);
     }

@@ -1,2 +1,5 @@
-// 1.20.4	2024-02-26T21:04:37.412579	Enchantment Data Provider
+// 1.20.4	2024-02-27T13:12:00.204974	Enchantment Data Provider
+0594b5a1f4fe226eddd6950b7b5dd8f32fb1c5d6 data/minecraft/enchantments/efficiency.json
+71664abed6ca9eb7cee054003f323736c5b9a730 data/minecraft/enchantments/fortune.json
+aababf1515f856c82602c87ae9ef9df299fcb691 data/minecraft/enchantments/mending.json
 4b1f1d2aac28c1a1d7899f23e29575117cfe4f22 data/minecraft/enchantments/silk_touch.json

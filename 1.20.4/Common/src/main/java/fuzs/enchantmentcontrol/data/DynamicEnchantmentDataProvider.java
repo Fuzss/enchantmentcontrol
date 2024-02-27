@@ -1,6 +1,6 @@
 package fuzs.enchantmentcontrol.data;
 
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentData;
+import fuzs.enchantmentcontrol.world.item.enchantment.DataBasedEnchantmentComponent;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -17,7 +17,7 @@ public class DynamicEnchantmentDataProvider extends AbstractEnchantmentDataProvi
     @Override
     public void addEnchantmentData() {
         for (Map.Entry<ResourceKey<Enchantment>, Enchantment> entry : BuiltInRegistries.ENCHANTMENT.entrySet()) {
-            this.add(entry.getKey().location(), EnchantmentData.fromEnchantment(entry.getValue()));
+            this.add(entry.getKey().location(), DataBasedEnchantmentComponent.fromEnchantment(entry.getValue()));
         }
     }
 }

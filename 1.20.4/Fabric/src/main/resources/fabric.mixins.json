@@ -5,6 +5,7 @@
   "package": "${modGroup}.fabric.mixin",
   "plugin": "${modGroup}.fabric.mixin.MixinConfigPluginImpl",
   "mixins": [
+    "EnchantmentHelperFabricMixin"
   ],
   "client": [
   ],
