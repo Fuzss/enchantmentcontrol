@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:frost_walker",
+    "minecraft:binding_curse",
+    "minecraft:soul_speed",
+    "minecraft:swift_sneak",
+    "minecraft:mending",
+    "minecraft:vanishing_curse"
+  ]
+}

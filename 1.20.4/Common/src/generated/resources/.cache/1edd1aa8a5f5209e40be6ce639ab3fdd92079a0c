@@ -1,7 +1,7 @@
-// 1.20.4	2024-02-28T17:35:16.810338	Tags for minecraft:enchantment mod id vanilla
-b701476493e441c742af68015fa70656797a7236 data/enchantmentcontrol/tags/enchantment/curses.json
+// 1.20.4	2024-02-29T15:46:15.3149	Tags for minecraft:enchantment mod id vanilla
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/enchantmentcontrol/tags/enchantment/curses.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/enchantmentcontrol/tags/enchantment/discoverable.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/enchantmentcontrol/tags/enchantment/tradeable.json
-938e521404bb1ce123743aeb97dc897ef93e8434 data/enchantmentcontrol/tags/enchantment/treasure.json
-2ec0c876d32c4e55a6db6bfcdb0763102ad48f33 data/enchantmentcontrol/tags/enchantment/unobtainable.json
-3c39c5be6d18cb8105adca1358412a4ecc8db634 data/enchantmentcontrol/tags/enchantment/untouched.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/enchantmentcontrol/tags/enchantment/treasure.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/enchantmentcontrol/tags/enchantment/unobtainable.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/enchantmentcontrol/tags/enchantment/untouched.json

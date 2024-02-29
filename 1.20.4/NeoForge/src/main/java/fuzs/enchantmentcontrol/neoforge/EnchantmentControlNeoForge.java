@@ -3,7 +3,6 @@ package fuzs.enchantmentcontrol.neoforge;
 import fuzs.enchantmentcontrol.EnchantmentControl;
 import fuzs.enchantmentcontrol.EnchantmentControlMod;
 import fuzs.enchantmentcontrol.config.CommonConfig;
-import fuzs.enchantmentcontrol.data.ModEnchantmentDataProvider;
 import fuzs.enchantmentcontrol.data.ModEnchantmentTagProvider;
 import fuzs.enchantmentcontrol.util.ModEnchantmentHelper;
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
@@ -25,10 +24,7 @@ public class EnchantmentControlNeoForge {
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
         ModConstructor.construct(EnchantmentControl.MOD_ID, EnchantmentControlMod::new);
-        DataProviderHelper.registerDataProviders(EnchantmentControl.MOD_ID,
-                ModEnchantmentTagProvider::new,
-                ModEnchantmentDataProvider::new
-        );
+        DataProviderHelper.registerDataProviders(EnchantmentControl.MOD_ID, ModEnchantmentTagProvider::new);
     }
 
     @SubscribeEvent

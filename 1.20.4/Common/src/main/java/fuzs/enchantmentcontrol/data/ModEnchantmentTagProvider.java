@@ -6,7 +6,6 @@ import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
 
 public class ModEnchantmentTagProvider extends AbstractTagProvider.Intrinsic<Enchantment> {
 
@@ -16,11 +15,11 @@ public class ModEnchantmentTagProvider extends AbstractTagProvider.Intrinsic<Enc
 
     @Override
     public void addTags(HolderLookup.Provider provider) {
-        this.tag(ModRegistry.TREASURE_ENCHANTMENT_TAG).add(Enchantments.SHARPNESS, Enchantments.MOB_LOOTING, Enchantments.KNOCKBACK, Enchantments.UNBREAKING);
-        this.tag(ModRegistry.CURSES_ENCHANTMENT_TAG).add(Enchantments.BLOCK_EFFICIENCY);
+        this.tag(ModRegistry.TREASURE_ENCHANTMENT_TAG);
+        this.tag(ModRegistry.CURSES_ENCHANTMENT_TAG);
         this.tag(ModRegistry.TRADEABLE_ENCHANTMENT_TAG);
         this.tag(ModRegistry.DISCOVERABLE_ENCHANTMENT_TAG);
-        this.tag(ModRegistry.UNOBTAINABLE_ENCHANTMENT_TAG).add(Enchantments.SWIFT_SNEAK, Enchantments.MENDING, Enchantments.FISHING_LUCK, Enchantments.FISHING_SPEED);
-        this.tag(ModRegistry.UNTOUCHED_ENCHANTMENT_TAG).add(Enchantments.FISHING_LUCK);
+        this.tag(ModRegistry.UNOBTAINABLE_ENCHANTMENT_TAG);
+        this.tag(ModRegistry.UNTOUCHED_ENCHANTMENT_TAG);
     }
 }

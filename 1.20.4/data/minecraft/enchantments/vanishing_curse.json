@@ -1,0 +1,14 @@
+{
+  "aliases": [],
+  "max_level": 1,
+  "min_level": 1,
+  "rarity": "VERY_RARE",
+  "slots": [
+    "MAINHAND",
+    "OFFHAND",
+    "FEET",
+    "LEGS",
+    "CHEST",
+    "HEAD"
+  ]
+}

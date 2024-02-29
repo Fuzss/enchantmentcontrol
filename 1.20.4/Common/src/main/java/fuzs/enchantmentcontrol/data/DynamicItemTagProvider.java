@@ -1,7 +1,6 @@
 package fuzs.enchantmentcontrol.data;
 
 import fuzs.enchantmentcontrol.CommonAbstractions;
-import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentCategoryTags;
 import fuzs.enchantmentcontrol.init.EnchantmentCategoryTagsImpl;
 import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
 import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentHolder;
