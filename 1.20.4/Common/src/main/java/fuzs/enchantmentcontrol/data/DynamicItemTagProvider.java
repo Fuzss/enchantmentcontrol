@@ -1,7 +1,8 @@
 package fuzs.enchantmentcontrol.data;
 
-import fuzs.enchantmentcontrol.init.ModRegistry;
+import fuzs.enchantmentcontrol.CommonAbstractions;
 import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
+import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentHolder;
 import fuzs.puzzleslib.api.data.v2.AbstractTagProvider;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
 import net.minecraft.core.HolderLookup;
@@ -20,12 +21,13 @@ public class DynamicItemTagProvider extends AbstractTagProvider.Items {
 
     @Override
     public void addTags(HolderLookup.Provider provider) {
-        for (Enchantment enchantment : BuiltInRegistries.ENCHANTMENT) {
+        for (EnchantmentHolder holder : EnchantmentHolder.values()) {
+            Enchantment enchantment = holder.getEnchantment();
             EnchantmentFeature.testHolderIsNull(enchantment);
-            this.populateTag(ModRegistry.createEnchantingTableItemTag(enchantment), (Item item) -> {
-                return enchantment.category.canEnchant(item);
+            this.populateTag(holder.getEnchantingTableItemTag(), (Item item) -> {
+                return CommonAbstractions.canApplyAtEnchantingTable(enchantment, item.getDefaultInstance());
             });
-            this.populateTag(ModRegistry.createAnvilItemTag(enchantment), (Item item) -> {
+            this.populateTag(holder.getAnvilItemTag(), (Item item) -> {
                 return enchantment.canEnchant(item.getDefaultInstance());
             });
         }

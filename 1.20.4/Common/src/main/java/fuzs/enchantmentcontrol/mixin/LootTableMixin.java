@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,11 +24,12 @@ abstract class LootTableMixin {
             at = @At(value = "TAIL", shift = At.Shift.BEFORE)
     )
     private ObjectArrayList<ItemStack> getRandomItems(ObjectArrayList<ItemStack> items, LootContext context) {
+        // remove disabled enchantments from generated loot, turn enchanted books into normal books if no enchantments are left
         ObjectListIterator<ItemStack> iterator = items.iterator();
         while (iterator.hasNext()) {
             ItemStack itemStack = iterator.next();
             if (itemStack.isEnchanted() || itemStack.getItem() instanceof EnchantedBookItem) {
-                Map<Enchantment, Integer> enchantments = ModEnchantmentHelper.getEnchantments(itemStack);
+                Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(itemStack);
                 boolean result = enchantments.keySet().removeIf(enchantment -> {
                     return !((EnchantmentFeature) enchantment).isEnabled();
                 });

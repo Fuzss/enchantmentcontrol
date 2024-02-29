@@ -43,6 +43,7 @@ public class MixinConfigPluginImpl extends AbstractMixinConfigPlugin {
             throw new IllegalStateException("Couldn't find field in " + classLoader);
         } else {
             try {
+                // we cannot access anything inside this module, use unsafe to get access to the field
                 Unsafe unsafe = UnsafeHandler.getUnsafe();
                 long fieldOffset = unsafe.objectFieldOffset(foundField);
                 Map<String, ClassLoader> parentLoaders = (Map<String, ClassLoader>) unsafe.getObject(classLoader,
@@ -50,6 +51,8 @@ public class MixinConfigPluginImpl extends AbstractMixinConfigPlugin {
                 );
                 return (URL url) -> {
                     try {
+                        // add the new url with a new url class loader in a new module path
+                        // cannot use a path where a module already exists
                         String moduleName = packageName.replace('/', '.');
                         ClassLoader moduleClassLoader = parentLoaders.computeIfAbsent(moduleName,
                                 $ -> new AccessibleURLClassLoader()

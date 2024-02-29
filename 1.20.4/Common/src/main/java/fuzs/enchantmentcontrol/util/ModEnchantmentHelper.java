@@ -16,12 +16,8 @@ import java.util.Map;
 
 public class ModEnchantmentHelper {
 
-    public static Map<Enchantment, Integer> getEnchantments(ItemStack itemStack) {
-        return EnchantmentHelper.getEnchantments(itemStack);
-    }
-
     public static ItemStack addEnchantments(Map<Enchantment, Integer> enchantments, ItemStack itemStack, boolean override) {
-        Map<Enchantment, Integer> oldEnchantments = getEnchantments(itemStack);
+        Map<Enchantment, Integer> oldEnchantments = EnchantmentHelper.getEnchantments(itemStack);
         for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
             if (override) {
                 oldEnchantments.put(entry.getKey(), entry.getValue());
@@ -69,13 +65,19 @@ public class ModEnchantmentHelper {
         if (tag != null) {
             newStack.setTag(tag.copy());
         }
+
         return newStack;
     }
 
     public static boolean isBookWithDisabledEnchantments(ItemStack itemStack) {
-        return itemStack.is(Items.ENCHANTED_BOOK) && getEnchantments(itemStack).keySet().removeIf(enchantment -> {
-            // just a wacky compact syntax, we don't need to actually remove anything here
-            return !((EnchantmentFeature) enchantment).isEnabled();
-        });
+        if (itemStack.is(Items.ENCHANTED_BOOK)) {
+            for (Enchantment enchantment : EnchantmentHelper.getEnchantments(itemStack).keySet()) {
+                if (!((EnchantmentFeature) enchantment).isEnabled()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

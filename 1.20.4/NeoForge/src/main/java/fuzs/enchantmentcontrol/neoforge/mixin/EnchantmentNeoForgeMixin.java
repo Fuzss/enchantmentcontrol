@@ -61,9 +61,7 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             }, at = @At("HEAD"), cancellable = true, require = 0, remap = false
     )
     public void canEnchant(ItemStack itemStack, CallbackInfoReturnable<Boolean> callback) {
-        this.ifHolderPresent(holder -> this.isEnabled() && itemStack.is(holder.getAnvilItemTag()),
-                callback::setReturnValue
-        );
+        this.ifHolderPresent(holder -> itemStack.is(holder.getAnvilItemTag()), callback::setReturnValue, false);
     }
 
     @SuppressWarnings("target")
@@ -99,7 +97,7 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             remap = false
     )
     public void isTradeable(CallbackInfoReturnable<Boolean> callback) {
-        this.ifHolderPresent(EnchantmentHolder::isTradeable, callback::setReturnValue);
+        this.ifHolderPresent(EnchantmentHolder::isTradeable, callback::setReturnValue, false);
     }
 
     @SuppressWarnings("target")
@@ -111,6 +109,19 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             remap = false
     )
     public void isDiscoverable(CallbackInfoReturnable<Boolean> callback) {
-        this.ifHolderPresent(EnchantmentHolder::isDiscoverable, callback::setReturnValue);
+        this.ifHolderPresent(EnchantmentHolder::isDiscoverable, callback::setReturnValue, false);
+    }
+
+    @SuppressWarnings("target")
+    @Inject(
+            method = {
+                    "canApplyAtEnchantingTable(Lnet/minecraft/world/item/ItemStack;)Z"
+            }, at = @At("HEAD"), cancellable = true, require = 0, remap = false
+    )
+    public void canApplyAtEnchantingTable(ItemStack itemStack, CallbackInfoReturnable<Boolean> callback) {
+        this.ifHolderPresent(holder -> itemStack.is(holder.getEnchantingTableItemTag()),
+                callback::setReturnValue,
+                false
+        );
     }
 }

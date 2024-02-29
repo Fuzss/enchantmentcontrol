@@ -21,12 +21,21 @@ public interface EnchantmentFeature extends FeatureElement {
     void setHolder(@Nullable EnchantmentHolder enchantmentHolder);
 
     default <T> void ifHolderPresent(Function<EnchantmentHolder, T> valueExtractor, Consumer<T> valueConsumer) {
+        this.ifHolderPresent(valueExtractor, valueConsumer, null);
+    }
+
+    default <T> void ifHolderPresent(Function<EnchantmentHolder, T> valueExtractor, Consumer<T> valueConsumer, @Nullable T fallback) {
         EnchantmentHolder holder = this.getHolder();
-        if (holder != null) valueConsumer.accept(valueExtractor.apply(holder));
+        if (holder != null && (this.isEnabled() || fallback != null)) {
+            valueConsumer.accept(this.isEnabled() ? valueExtractor.apply(holder) : fallback);
+        }
     }
 
     @Override
     default FeatureFlagSet requiredFeatures() {
+        // we don't care about the feature flag set, the vanilla FeatureElement interface is only used to easily support features
+        // like registry filtering (like disabled enchantments not showing up as command suggestions)
+        // and for other mods to be able to check if an enchantment is enabled without introducing a hard dependency on this mod
         return FeatureFlags.DEFAULT_FLAGS;
     }
 
@@ -37,6 +46,9 @@ public interface EnchantmentFeature extends FeatureElement {
 
     @Override
     default boolean isEnabled(FeatureFlagSet enabledFeatures) {
+        // we don't care about the feature flag set, the vanilla FeatureElement interface is only used to easily support features
+        // like registry filtering (like disabled enchantments not showing up as command suggestions)
+        // and for other mods to be able to check if an enchantment is enabled without introducing a hard dependency on this mod
         return this.isEnabled();
     }
 }

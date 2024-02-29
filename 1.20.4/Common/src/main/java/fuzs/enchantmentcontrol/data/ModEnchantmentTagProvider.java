@@ -20,6 +20,7 @@ public class ModEnchantmentTagProvider extends AbstractTagProvider.Intrinsic<Enc
         this.tag(ModRegistry.CURSES_ENCHANTMENT_TAG).add(Enchantments.BLOCK_EFFICIENCY);
         this.tag(ModRegistry.TRADEABLE_ENCHANTMENT_TAG);
         this.tag(ModRegistry.DISCOVERABLE_ENCHANTMENT_TAG);
-        this.tag(ModRegistry.UNOBTAINABLE_ENCHANTMENT_TAG).add(Enchantments.SWIFT_SNEAK);
+        this.tag(ModRegistry.UNOBTAINABLE_ENCHANTMENT_TAG).add(Enchantments.SWIFT_SNEAK, Enchantments.MENDING, Enchantments.FISHING_LUCK, Enchantments.FISHING_SPEED);
+        this.tag(ModRegistry.UNTOUCHED_ENCHANTMENT_TAG).add(Enchantments.MENDING);
     }
 }

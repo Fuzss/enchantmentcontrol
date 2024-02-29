@@ -36,6 +36,7 @@ abstract class EnchantmentMixin implements EnchantmentFeature {
 
     @Inject(method = "isCompatibleWith", at = @At("HEAD"), cancellable = true)
     public void isCompatibleWith(Enchantment other, CallbackInfoReturnable<Boolean> callback) {
+        // hook compatibility check here instead of injecting into Enchantment::checkCompatibility for all enchantment classes to reduce the patch surface
         EnchantmentHolder holder = this.getHolder();
         EnchantmentHolder otherHolder = ((EnchantmentFeature) other).getHolder();
         if (holder != null && otherHolder != null) {

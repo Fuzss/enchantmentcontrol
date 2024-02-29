@@ -19,21 +19,26 @@ public class UnsafeHandler {
             Constructor<?> constructor = Unsafe.class.getDeclaredConstructors()[0];
             constructor.setAccessible(true);
             UNSAFE = (Unsafe) constructor.newInstance();
-        }
-        catch (Throwable throwable) {
+        } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }
     }
 
     public static void addEnchantmentsToFilteredRegistries() {
+        // add enchantments registry to filtered registries map, not sure if there is another way to modify this interface field containing an immutable map
+        // this will e.g. hide disabled enchantments from the /enchant command
         Field filteredRegistriesField = Iterators.forArray(FeatureElement.class.getFields()).next();
         long filteredRegistriesOffset = UNSAFE.staticFieldOffset(filteredRegistriesField);
         Object filteredRegistriesBase = UNSAFE.staticFieldBase(filteredRegistriesField);
-        UNSAFE.putObject(filteredRegistriesBase, filteredRegistriesOffset, Sets.newHashSet(FeatureElement.FILTERED_REGISTRIES));
+        UNSAFE.putObject(filteredRegistriesBase,
+                filteredRegistriesOffset,
+                Sets.newHashSet(FeatureElement.FILTERED_REGISTRIES)
+        );
         FeatureElement.FILTERED_REGISTRIES.add((ResourceKey<? extends Registry<? extends FeatureElement>>) (ResourceKey<?>) Registries.ENCHANTMENT);
     }
 
     public static Unsafe getUnsafe() {
+        // we need this on Forge & NeoForge to access class loader internals
         return UNSAFE;
     }
 }

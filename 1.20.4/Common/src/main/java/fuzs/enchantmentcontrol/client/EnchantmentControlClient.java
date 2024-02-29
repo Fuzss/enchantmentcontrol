@@ -21,7 +21,7 @@ public class EnchantmentControlClient implements ClientModConstructor {
 
     private static void registerEventHandlers() {
         ClientPlayerNetworkEvents.LOGGED_OUT.register((LocalPlayer player, MultiPlayerGameMode multiPlayerGameMode, Connection connection) -> {
-            EnchantmentHolder.restoreAllOriginalValues();
+            EnchantmentHolder.clearAll();
         });
         ScreenOpeningCallback.EVENT.register((oldScreen, newScreen) -> {
             if (newScreen.get() instanceof TitleScreen && EnchantmentClassesCache.isFailedLoad() &&

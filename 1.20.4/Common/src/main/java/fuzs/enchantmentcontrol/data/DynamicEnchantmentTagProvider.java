@@ -2,6 +2,7 @@ package fuzs.enchantmentcontrol.data;
 
 import fuzs.enchantmentcontrol.init.ModRegistry;
 import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
+import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentHolder;
 import fuzs.puzzleslib.api.data.v2.AbstractTagProvider;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
 import net.minecraft.core.HolderLookup;
@@ -24,9 +25,10 @@ public class DynamicEnchantmentTagProvider extends AbstractTagProvider.Intrinsic
         this.buildEnchantmentTag(ModRegistry.TREASURE_ENCHANTMENT_TAG, Enchantment::isTreasureOnly);
         this.buildEnchantmentTag(ModRegistry.TRADEABLE_ENCHANTMENT_TAG, Enchantment::isTradeable);
         this.buildEnchantmentTag(ModRegistry.CURSES_ENCHANTMENT_TAG, Enchantment::isCurse);
-        for (Enchantment enchantment : BuiltInRegistries.ENCHANTMENT) {
+        for (EnchantmentHolder holder : EnchantmentHolder.values()) {
+            Enchantment enchantment = holder.getEnchantment();
             EnchantmentFeature.testHolderIsNull(enchantment);
-            this.buildEnchantmentTag(ModRegistry.createIncompatibleEnchantmentTag(enchantment), (Enchantment other) -> {
+            this.buildEnchantmentTag(holder.getIncompatibleEnchantmentTag(), (Enchantment other) -> {
                 return enchantment != other && !enchantment.isCompatibleWith(other);
             }, false);
         }

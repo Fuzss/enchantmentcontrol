@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class InvalidCacheOnboardingScreen extends Screen {
     public static final Component TEXT_COMPONENT = Component.literal(
-            "Invalid Cache for " + EnchantmentControl.MOD_NAME +
+            "Found invalid cache for " + EnchantmentControl.MOD_NAME +
                     " mod!\n\nCustom enchantment settings will only apply after a game restart.");
     private static boolean hasSeenOnboardingScreen;
 

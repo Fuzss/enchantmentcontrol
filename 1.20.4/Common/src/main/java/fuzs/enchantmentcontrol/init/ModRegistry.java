@@ -18,6 +18,7 @@ public class ModRegistry {
     public static final TagKey<Enchantment> CURSES_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("curses");
     public static final TagKey<Enchantment> DISCOVERABLE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("discoverable");
     public static final TagKey<Enchantment> UNOBTAINABLE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("unobtainable");
+    public static final TagKey<Enchantment> UNTOUCHED_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("untouched");
 
     public static void touch() {
 

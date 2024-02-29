@@ -1,6 +1,7 @@
 package fuzs.enchantmentcontrol.mixin;
 
 import com.google.common.collect.Maps;
+import fuzs.enchantmentcontrol.EnchantmentControl;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -22,6 +23,28 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * A mixin plugin for dynamically applying our enchantment mixin (found in mod loader specific subprojects) to all
+ * enchantment classes. This approach is chosen as:
+ * <ul>
+ * <li>Only applying to the base enchantment class is not sufficient, as most methods are designed to be
+ * overridden</li>
+ * <li>Also modifying the callsites (an approach the Apotheosis mod has taken) is not an option, since there is no way
+ * for preventing other mods from using the vanilla methods</li>
+ * </ul>
+ * All class targets for our dynamic enchantment mixin are
+ * determined at runtime from all registered enchantments and stored to a cache file that can be used for future
+ * applications. Since enchantment registration happens long after mixins must be applied, the dynamic mixin creation
+ * will not work on the first launch with this mod when the cache file is still absent. When that is the case a warning
+ * screen will show in-game. This is no issue for mod packs (what this mod is primarily designed for), as they will
+ * already ship the cache file as part of their default configuration.
+ * <p>
+ * Note that the newly generated mixin class must be placed in a different and also unused package from the original to
+ * comply with module restrictions on Forge &amp; NeoForge. On Fabric this wouldn't be necessary.
+ * <p>
+ * The design of this mixin plugin class is mostly copied from the <a
+ * href="https://github.com/Chocohead/Fabric-ASM">Manningham Mills</a> project.
+ */
 public abstract class AbstractMixinConfigPlugin implements IMixinConfigPlugin {
     private static final Map<String, Supplier<List<String>>> DYNAMIC_MIXINS = Maps.newLinkedHashMap();
     private static final String DYNAMIC_MIXIN_CLASSES_SUB_PACKAGE = "dynamic";
@@ -50,7 +73,8 @@ public abstract class AbstractMixinConfigPlugin implements IMixinConfigPlugin {
             if (!targets.isEmpty()) {
                 this.loadAndExpandMixinTargets(this.getClass(),
                         mixinPackage,
-                        entry.getKey(), targets,
+                        entry.getKey(),
+                        targets,
                         classGenerators::put
                 );
             } else {
@@ -146,7 +170,7 @@ public abstract class AbstractMixinConfigPlugin implements IMixinConfigPlugin {
 
     protected static URL createMapBackedUrl(Map<String, byte[]> classGenerators) {
         try {
-            return new URL("magic-at", null, -1, "/", new MapBackedURLStreamHandler(classGenerators));
+            return new URL(EnchantmentControl.MOD_ID, null, -1, "/", new MapBackedURLStreamHandler(classGenerators));
         } catch (MalformedURLException exception) {
             throw new RuntimeException(exception);
         }

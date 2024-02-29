@@ -2,11 +2,10 @@ package fuzs.enchantmentcontrol.handler;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import com.mojang.logging.LogUtils;
+import fuzs.enchantmentcontrol.EnchantmentControl;
 import fuzs.puzzleslib.api.core.v1.ModLoaderEnvironment;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.enchantment.Enchantment;
-import org.slf4j.Logger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -18,9 +17,10 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public final class EnchantmentClassesCache {
-    private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Path CACHE_FILE_PATH = ModLoaderEnvironment.INSTANCE.getGameDirectory()
-            .resolve("." + "enchantmentcontrol" + "cache");
+    public static final String HIDDEN_MOD_ROOT_DIRECTORY_NAME = "." + EnchantmentControl.MOD_ID;
+    public static final Path HIDDEN_MOD_ROOT_PATH = ModLoaderEnvironment.INSTANCE.getGameDirectory()
+            .resolve(HIDDEN_MOD_ROOT_DIRECTORY_NAME);
+    private static final Path CACHE_FILE_PATH = HIDDEN_MOD_ROOT_PATH.resolve("cache");
     private static final String KEY_MAPPINGS = "namespace:";
     private static boolean failedLoad;
 
@@ -30,6 +30,7 @@ public final class EnchantmentClassesCache {
 
     public static void save() {
         try {
+            HIDDEN_MOD_ROOT_PATH.toFile().mkdirs();
             try (PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(CACHE_FILE_PATH.toFile()),
                     StandardCharsets.UTF_8
             ))) {
@@ -37,7 +38,7 @@ public final class EnchantmentClassesCache {
                 getAllEnchantmentClassNames().forEach(printWriter::println);
             }
         } catch (Exception exception) {
-            LOGGER.error("Failed to save file at " + CACHE_FILE_PATH, exception);
+            EnchantmentControl.LOGGER.error("Failed to save file at " + CACHE_FILE_PATH, exception);
         }
     }
 
@@ -51,7 +52,7 @@ public final class EnchantmentClassesCache {
                 throw new FileNotFoundException();
             }
         } catch (Throwable throwable) {
-            LOGGER.error("Failed to load file at " + CACHE_FILE_PATH, throwable);
+            EnchantmentControl.LOGGER.error("Failed to load file at " + CACHE_FILE_PATH, throwable);
         }
 
         failedLoad = true;
