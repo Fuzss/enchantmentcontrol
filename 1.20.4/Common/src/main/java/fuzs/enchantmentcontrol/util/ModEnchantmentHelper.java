@@ -25,6 +25,7 @@ public class ModEnchantmentHelper {
                 oldEnchantments.merge(entry.getKey(), entry.getValue(), Math::max);
             }
         }
+
         return setEnchantments(enchantments, itemStack);
     }
 

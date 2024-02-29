@@ -2,6 +2,7 @@ package fuzs.enchantmentcontrol.fabric;
 
 import fuzs.enchantmentcontrol.EnchantmentControl;
 import fuzs.enchantmentcontrol.EnchantmentControlMod;
+import fuzs.enchantmentcontrol.config.CommonConfig;
 import fuzs.enchantmentcontrol.util.ModEnchantmentHelper;
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
 import net.fabricmc.api.ModInitializer;
@@ -19,8 +20,10 @@ public class EnchantmentControlFabric implements ModInitializer {
 
     private static void registerEventHandlers() {
         ItemGroupEvents.MODIFY_ENTRIES_ALL.register((CreativeModeTab group, FabricItemGroupEntries entries) -> {
-            entries.getDisplayStacks().removeIf(ModEnchantmentHelper::isBookWithDisabledEnchantments);
-            entries.getSearchTabStacks().removeIf(ModEnchantmentHelper::isBookWithDisabledEnchantments);
+            if (EnchantmentControlMod.CONFIG.get(CommonConfig.class).removeUnobtainableFromCreative) {
+                entries.getDisplayStacks().removeIf(ModEnchantmentHelper::isBookWithDisabledEnchantments);
+                entries.getSearchTabStacks().removeIf(ModEnchantmentHelper::isBookWithDisabledEnchantments);
+            }
         });
     }
 }

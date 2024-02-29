@@ -2,6 +2,7 @@ package fuzs.enchantmentcontrol.forge;
 
 import fuzs.enchantmentcontrol.EnchantmentControl;
 import fuzs.enchantmentcontrol.EnchantmentControlMod;
+import fuzs.enchantmentcontrol.config.CommonConfig;
 import fuzs.enchantmentcontrol.util.ModEnchantmentHelper;
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
 import net.minecraft.world.item.CreativeModeTab;
@@ -25,11 +26,13 @@ public class EnchantmentControlForge {
 
     @SubscribeEvent
     public static void onBuildCreativeModeTabContents(final BuildCreativeModeTabContentsEvent evt) {
-        Iterator<Map.Entry<ItemStack, CreativeModeTab.TabVisibility>> iterator = evt.getEntries().iterator();
-        while (iterator.hasNext()) {
-            ItemStack itemStack = iterator.next().getKey();
-            if (ModEnchantmentHelper.isBookWithDisabledEnchantments(itemStack)) {
-                iterator.remove();
+        if (EnchantmentControlMod.CONFIG.get(CommonConfig.class).removeUnobtainableFromCreative) {
+            Iterator<Map.Entry<ItemStack, CreativeModeTab.TabVisibility>> iterator = evt.getEntries().iterator();
+            while (iterator.hasNext()) {
+                ItemStack itemStack = iterator.next().getKey();
+                if (ModEnchantmentHelper.isBookWithDisabledEnchantments(itemStack)) {
+                    iterator.remove();
+                }
             }
         }
     }

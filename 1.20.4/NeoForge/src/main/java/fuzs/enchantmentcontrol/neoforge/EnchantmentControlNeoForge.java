@@ -2,6 +2,7 @@ package fuzs.enchantmentcontrol.neoforge;
 
 import fuzs.enchantmentcontrol.EnchantmentControl;
 import fuzs.enchantmentcontrol.EnchantmentControlMod;
+import fuzs.enchantmentcontrol.config.CommonConfig;
 import fuzs.enchantmentcontrol.data.ModEnchantmentDataProvider;
 import fuzs.enchantmentcontrol.data.ModEnchantmentTagProvider;
 import fuzs.enchantmentcontrol.util.ModEnchantmentHelper;
@@ -32,11 +33,13 @@ public class EnchantmentControlNeoForge {
 
     @SubscribeEvent
     public static void onBuildCreativeModeTabContents(final BuildCreativeModeTabContentsEvent evt) {
-        Iterator<Map.Entry<ItemStack, CreativeModeTab.TabVisibility>> iterator = evt.getEntries().iterator();
-        while (iterator.hasNext()) {
-            ItemStack itemStack = iterator.next().getKey();
-            if (ModEnchantmentHelper.isBookWithDisabledEnchantments(itemStack)) {
-                iterator.remove();
+        if (EnchantmentControlMod.CONFIG.get(CommonConfig.class).removeUnobtainableFromCreative) {
+            Iterator<Map.Entry<ItemStack, CreativeModeTab.TabVisibility>> iterator = evt.getEntries().iterator();
+            while (iterator.hasNext()) {
+                ItemStack itemStack = iterator.next().getKey();
+                if (ModEnchantmentHelper.isBookWithDisabledEnchantments(itemStack)) {
+                    iterator.remove();
+                }
             }
         }
     }

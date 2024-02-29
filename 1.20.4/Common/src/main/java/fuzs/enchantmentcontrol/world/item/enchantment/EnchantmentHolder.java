@@ -2,6 +2,7 @@ package fuzs.enchantmentcontrol.world.item.enchantment;
 
 import com.google.common.collect.Maps;
 import fuzs.enchantmentcontrol.EnchantmentControlMod;
+import fuzs.enchantmentcontrol.api.v1.data.EnchantmentData;
 import fuzs.enchantmentcontrol.handler.EnchantmentClassesCache;
 import fuzs.enchantmentcontrol.init.ModRegistry;
 import fuzs.extensibleenums.api.v2.CommonAbstractions;
@@ -18,7 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public final class EnchantmentHolder {
-    private static final Map<ResourceLocation, EnchantmentHolder> BY_ENCHANTMENT_ID = Maps.newHashMap();
+    private static final Map<ResourceLocation, EnchantmentHolder> BY_ENCHANTMENT_LOCATION = Maps.newHashMap();
 
     private final Holder.Reference<Enchantment> holder;
     private final EnchantmentData originalEnchantmentData;
@@ -33,12 +34,14 @@ public final class EnchantmentHolder {
         ResourceLocation resourceLocation = holder.key().location();
         EnchantmentFeature.testHolderIsNull(enchantment);
         this.holder = holder;
-        this.enchantmentData = this.originalEnchantmentData = EnchantmentData.fromEnchantment(enchantment);
+        this.enchantmentData = this.originalEnchantmentData = EnchantmentDataImpl.fromEnchantment(enchantment);
         this.tagBasedEnchantmentCategory = this.createTagBasedEnchantmentCategory(resourceLocation);
         this.enchantingTableItemTag = ModRegistry.createEnchantingTableItemTag(enchantment);
         this.anvilItemTag = ModRegistry.createAnvilItemTag(enchantment);
         this.incompatibleEnchantmentTag = ModRegistry.createIncompatibleEnchantmentTag(enchantment);
-        BY_ENCHANTMENT_ID.put(resourceLocation, this);
+        if (BY_ENCHANTMENT_LOCATION.put(resourceLocation, this) != null) {
+            throw new IllegalStateException("Duplicate holder for enchantment " + resourceLocation);
+        }
     }
 
     private EnchantmentCategory createTagBasedEnchantmentCategory(ResourceLocation resourceLocation) {
@@ -49,7 +52,7 @@ public final class EnchantmentHolder {
     }
 
     public static Collection<EnchantmentHolder> values() {
-        return BY_ENCHANTMENT_ID.values();
+        return BY_ENCHANTMENT_LOCATION.values();
     }
 
     public static void clearAll() {
@@ -60,7 +63,7 @@ public final class EnchantmentHolder {
 
     @Nullable
     public static EnchantmentHolder getHolder(ResourceLocation resourceLocation) {
-        return BY_ENCHANTMENT_ID.get(resourceLocation);
+        return BY_ENCHANTMENT_LOCATION.get(resourceLocation);
     }
 
     public ResourceLocation getResourceLocation() {
@@ -99,7 +102,7 @@ public final class EnchantmentHolder {
             ((EnchantmentFeature) this.getEnchantment()).setHolder(this);
         }
 
-        enchantmentData.apply(this.getEnchantment());
+        ((EnchantmentDataImpl) enchantmentData).apply(this.getEnchantment());
         this.enchantmentData = enchantmentData;
     }
 

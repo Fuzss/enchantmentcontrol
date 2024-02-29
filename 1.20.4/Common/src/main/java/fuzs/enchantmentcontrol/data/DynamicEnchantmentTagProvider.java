@@ -14,9 +14,11 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import java.util.function.Predicate;
 
 public class DynamicEnchantmentTagProvider extends AbstractTagProvider.Intrinsic<Enchantment> {
+    private final boolean skipHolderValidation;
 
-    public DynamicEnchantmentTagProvider(DataProviderContext context) {
+    private DynamicEnchantmentTagProvider(DataProviderContext context, boolean skipHolderValidation) {
         super(Registries.ENCHANTMENT, context);
+        this.skipHolderValidation = skipHolderValidation;
     }
 
     @Override
@@ -27,7 +29,9 @@ public class DynamicEnchantmentTagProvider extends AbstractTagProvider.Intrinsic
         this.buildEnchantmentTag(ModRegistry.CURSES_ENCHANTMENT_TAG, Enchantment::isCurse);
         for (EnchantmentHolder holder : EnchantmentHolder.values()) {
             Enchantment enchantment = holder.getEnchantment();
-            EnchantmentFeature.testHolderIsNull(enchantment);
+            if (!this.skipHolderValidation) {
+                EnchantmentFeature.testHolderIsNull(enchantment);
+            }
             this.buildEnchantmentTag(holder.getIncompatibleEnchantmentTag(), (Enchantment other) -> {
                 return enchantment != other && !enchantment.isCompatibleWith(other);
             }, false);
@@ -41,8 +45,16 @@ public class DynamicEnchantmentTagProvider extends AbstractTagProvider.Intrinsic
     private void buildEnchantmentTag(TagKey<Enchantment> tagKey, Predicate<Enchantment> predicate, boolean testHolder) {
         IntrinsicTagAppender<Enchantment> tagAppender = this.tag(tagKey);
         for (Enchantment enchantment : BuiltInRegistries.ENCHANTMENT) {
-            if (testHolder) EnchantmentFeature.testHolderIsNull(enchantment);
-            if (predicate.test(enchantment)) tagAppender.add(enchantment);
+            if (testHolder && !this.skipHolderValidation) {
+                EnchantmentFeature.testHolderIsNull(enchantment);
+            }
+            if (predicate.test(enchantment)) {
+                tagAppender.add(enchantment);
+            }
         }
+    }
+
+    public static DataProviderContext.Factory create(boolean skipHolderValidation) {
+        return context -> new DynamicEnchantmentTagProvider(context, skipHolderValidation);
     }
 }

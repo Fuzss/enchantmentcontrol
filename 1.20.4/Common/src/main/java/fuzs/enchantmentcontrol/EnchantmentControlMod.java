@@ -1,19 +1,16 @@
 package fuzs.enchantmentcontrol;
 
 import fuzs.enchantmentcontrol.client.commands.EnchantmentDataCommand;
-import fuzs.enchantmentcontrol.data.DynamicEnchantmentDataProvider;
-import fuzs.enchantmentcontrol.data.DynamicEnchantmentTagProvider;
-import fuzs.enchantmentcontrol.data.DynamicItemTagProvider;
+import fuzs.enchantmentcontrol.config.CommonConfig;
 import fuzs.enchantmentcontrol.handler.EnchantmentClassesCache;
 import fuzs.enchantmentcontrol.handler.UnsafeHandler;
 import fuzs.enchantmentcontrol.init.ModRegistry;
 import fuzs.enchantmentcontrol.network.ClientboundEnchantmentDataMessage;
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentData;
+import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentDataImpl;
 import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentDataManager;
 import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentHolder;
+import fuzs.puzzleslib.api.config.v3.ConfigHolder;
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
-import fuzs.puzzleslib.api.core.v1.ModContainer;
-import fuzs.puzzleslib.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.api.core.v1.context.AddReloadListenersContext;
 import fuzs.puzzleslib.api.core.v1.context.PackRepositorySourcesContext;
 import fuzs.puzzleslib.api.event.v1.LoadCompleteCallback;
@@ -24,9 +21,9 @@ import fuzs.puzzleslib.api.network.v3.PlayerSet;
 import fuzs.puzzleslib.api.resources.v1.DynamicPackResources;
 import fuzs.puzzleslib.api.resources.v1.PackResourcesHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 
 import java.util.function.Predicate;
@@ -35,6 +32,7 @@ import java.util.stream.Collectors;
 public class EnchantmentControlMod extends EnchantmentControl implements ModConstructor {
     public static final NetworkHandlerV3 NETWORK = NetworkHandlerV3.builder(MOD_ID)
             .registerClientbound(ClientboundEnchantmentDataMessage.class);
+    public static final ConfigHolder CONFIG = ConfigHolder.builder(MOD_ID).common(CommonConfig.class);
 
     @Override
     public void onConstructMod() {
@@ -55,7 +53,7 @@ public class EnchantmentControlMod extends EnchantmentControl implements ModCons
                                 .stream()
                                 .filter(Predicate.not(EnchantmentHolder::isOriginalEnchantmentData))
                                 .collect(Collectors.toMap(EnchantmentHolder::getResourceLocation,
-                                        EnchantmentHolder::getEnchantmentData
+                                        holder -> ((EnchantmentDataImpl) holder.getEnchantmentData())
                                 )))
                 );
             }
@@ -76,28 +74,20 @@ public class EnchantmentControlMod extends EnchantmentControl implements ModCons
     @Override
     public void onAddDataPackFinders(PackRepositorySourcesContext context) {
         context.addRepositorySource(PackResourcesHelper.buildServerPack(id("enchantments"),
-                () -> new DynamicPackResources(EnchantmentDataCommand.DYNAMIC_ENCHANTMENT_DATA_FACTORIES) {
+                () -> new DynamicPackResources(EnchantmentDataCommand.getEnchantmentDataFactories(false)) {
 
                     @Override
                     protected void setup() {
                         EnchantmentHolder.clearAll();
-                        super.setup();
                     }
                 },
-                Component.literal("Generated Data Pack"),
-                getPackDescription(MOD_ID),
+                PackResourcesHelper.getPackTitle(PackType.SERVER_DATA),
+                PackResourcesHelper.getPackDescription(MOD_ID),
                 true,
                 Pack.Position.BOTTOM,
                 false,
                 false
         ));
-    }
-
-    private static Component getPackDescription(String modId) {
-        // TODO remove and replace with accessible Puzzles Lib method
-        return ModLoaderEnvironment.INSTANCE.getModContainer(modId).map(ModContainer::getDisplayName).map(name -> {
-            return Component.literal(name + " Dynamic Resources");
-        }).orElseGet(() -> Component.literal("Dynamic Resources (" + modId + ")"));
     }
 
     @Override

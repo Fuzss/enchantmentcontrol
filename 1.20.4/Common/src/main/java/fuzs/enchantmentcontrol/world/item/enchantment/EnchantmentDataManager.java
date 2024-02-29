@@ -3,6 +3,7 @@ package fuzs.enchantmentcontrol.world.item.enchantment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import fuzs.enchantmentcontrol.EnchantmentControlMod;
 import fuzs.enchantmentcontrol.handler.EnchantmentClassesCache;
 import fuzs.enchantmentcontrol.init.ModRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +33,11 @@ public final class EnchantmentDataManager extends SimpleJsonResourceReloadListen
                     Objects.requireNonNull(jsonElement, "enchantment data for " + holder.getResourceLocation() + " is null");
                     // this does not just set the loaded data to the enchantment holders, but also sets the holders to the enchantments
                     // do not apply any changes to enchantments in this tag, every behavior should be vanilla this way
-                    holder.setEnchantmentData(EnchantmentData.fromJson(holder, jsonElement));
+                    try {
+                        holder.setEnchantmentData(EnchantmentDataImpl.fromJson(holder, jsonElement));
+                    } catch (Exception exception) {
+                        EnchantmentControlMod.LOGGER.error("Failed to parse enchantment data for {}", holder.getResourceLocation(), exception);
+                    }
                 }
             }
         }

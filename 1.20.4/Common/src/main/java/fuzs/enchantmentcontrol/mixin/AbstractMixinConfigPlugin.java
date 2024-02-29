@@ -43,7 +43,8 @@ import java.util.function.Supplier;
  * comply with module restrictions on Forge &amp; NeoForge. On Fabric this wouldn't be necessary.
  * <p>
  * The design of this mixin plugin class is mostly copied from the <a
- * href="https://github.com/Chocohead/Fabric-ASM">Manningham Mills</a> project.
+ * href="https://github.com/Chocohead/Fabric-ASM">Manningham Mills</a> project with some necessary adjustments for
+ * Forge &amp; NeoForge.
  */
 public abstract class AbstractMixinConfigPlugin implements IMixinConfigPlugin {
     private static final Map<String, Supplier<List<String>>> DYNAMIC_MIXINS = Maps.newLinkedHashMap();

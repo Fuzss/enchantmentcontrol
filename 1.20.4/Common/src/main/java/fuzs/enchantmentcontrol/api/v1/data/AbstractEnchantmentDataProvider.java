@@ -1,9 +1,9 @@
-package fuzs.enchantmentcontrol.data;
+package fuzs.enchantmentcontrol.api.v1.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentData;
+import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentDataImpl;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
@@ -34,7 +34,7 @@ public abstract class AbstractEnchantmentDataProvider implements DataProvider {
         this.addEnchantmentData();
         List<CompletableFuture<?>> futures = Lists.newArrayList();
         for (Map.Entry<ResourceLocation, EnchantmentData> entry : this.providers.entrySet()) {
-            JsonElement jsonElement = entry.getValue().toJson();
+            JsonElement jsonElement = ((EnchantmentDataImpl) entry.getValue()).toJson();
             Path path = this.pathProvider.json(entry.getKey());
             futures.add(DataProvider.saveStable(output, jsonElement, path));
         }
