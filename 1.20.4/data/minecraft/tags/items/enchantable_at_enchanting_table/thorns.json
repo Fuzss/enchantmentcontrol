@@ -1,5 +1,5 @@
 {
-  "replace": false,
+  "replace": true,
   "values": [
     "minecraft:leather_chestplate",
     "minecraft:chainmail_chestplate",

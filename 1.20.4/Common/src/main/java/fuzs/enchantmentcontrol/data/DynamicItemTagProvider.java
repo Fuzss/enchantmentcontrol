@@ -4,10 +4,12 @@ import fuzs.enchantmentcontrol.CommonAbstractions;
 import fuzs.enchantmentcontrol.init.EnchantmentCategoryTagsImpl;
 import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
 import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentHolder;
-import fuzs.puzzleslib.api.data.v2.AbstractTagProvider;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
+import fuzs.puzzleslib.api.data.v2.tags.AbstractTagAppender;
+import fuzs.puzzleslib.api.data.v2.tags.AbstractTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -15,11 +17,11 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import java.util.function.Predicate;
 
-public class DynamicItemTagProvider extends AbstractTagProvider.Items {
+public class DynamicItemTagProvider extends AbstractTagProvider<Item> {
     private final boolean skipHolderValidation;
 
     private DynamicItemTagProvider(DataProviderContext context, boolean skipHolderValidation) {
-        super(context);
+        super(Registries.ITEM, context);
         this.skipHolderValidation = skipHolderValidation;
     }
 
@@ -30,23 +32,28 @@ public class DynamicItemTagProvider extends AbstractTagProvider.Items {
             if (!this.skipHolderValidation) {
                 EnchantmentFeature.testHolderIsNull(enchantment);
             }
-            addAllMatchingItems(this.tag(holder.getEnchantingTableItemTag()), (Item item) -> {
+            addAllMatchingItems(this.add(holder.getEnchantingTableItemTag()), (Item item) -> {
                 // we do not use our dynamic enchantment category tags here since Forge overrides that with a method which allows for additional items
                 return CommonAbstractions.canApplyAtEnchantingTable(enchantment, item.getDefaultInstance());
             });
-            addAllMatchingItems(this.tag(holder.getAnvilItemTag()), (Item item) -> {
+            addAllMatchingItems(this.add(holder.getAnvilItemTag()), (Item item) -> {
                 return enchantment.canEnchant(item.getDefaultInstance());
             });
         }
         for (EnchantmentCategory enchantmentCategory : EnchantmentCategory.values()) {
             TagKey<Item> tagKey = EnchantmentCategoryTagsImpl.getTagKey(enchantmentCategory);
             if (tagKey != null) {
-                addAllMatchingItems(this.tag(tagKey), enchantmentCategory::canEnchant);
+                addAllMatchingItems(this.add(tagKey), enchantmentCategory::canEnchant);
             }
         }
     }
 
-    public static void addAllMatchingItems(IntrinsicTagAppender<Item> tagAppender, Predicate<Item> predicate) {
+    @Override
+    public AbstractTagAppender<Item> add(TagKey<Item> tagKey) {
+        return super.add(tagKey).setReplace(this.skipHolderValidation);
+    }
+
+    public static void addAllMatchingItems(AbstractTagAppender<Item> tagAppender, Predicate<Item> predicate) {
         for (Item item : BuiltInRegistries.ITEM) {
             if (predicate.test(item)) {
                 tagAppender.add(item);

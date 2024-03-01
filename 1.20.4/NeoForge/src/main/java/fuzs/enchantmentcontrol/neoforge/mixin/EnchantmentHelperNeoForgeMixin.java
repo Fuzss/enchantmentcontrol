@@ -17,7 +17,9 @@ abstract class EnchantmentHelperNeoForgeMixin {
 
     @WrapOperation(
             method = "runIterationOnItem", at = @At(
-            value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getAllEnchantments()Ljava/util/Map;"
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/item/ItemStack;getAllEnchantments()Ljava/util/Map;",
+            remap = false
     )
     )
     private static Map<Enchantment, Integer> runIterationOnItem(ItemStack itemStack, Operation<Map<Enchantment, Integer>> operation) {

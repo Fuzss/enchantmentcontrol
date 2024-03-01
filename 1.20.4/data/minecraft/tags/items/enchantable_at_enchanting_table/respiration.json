@@ -1,5 +1,5 @@
 {
-  "replace": false,
+  "replace": true,
   "values": [
     "minecraft:turtle_helmet",
     "minecraft:leather_helmet",

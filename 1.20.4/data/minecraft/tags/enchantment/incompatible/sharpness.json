@@ -1,5 +1,5 @@
 {
-  "replace": false,
+  "replace": true,
   "values": [
     "minecraft:smite",
     "minecraft:bane_of_arthropods"

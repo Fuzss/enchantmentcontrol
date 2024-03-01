@@ -161,11 +161,15 @@ public abstract class AbstractMixinConfigPlugin implements IMixinConfigPlugin {
             return annotationNode.desc.equals("Lorg/spongepowered/asm/mixin/Mixin;");
         });
         AnnotationVisitor mixinAnnotation = classNode.visitAnnotation("Lorg/spongepowered/asm/mixin/Mixin;", false);
-        AnnotationVisitor targetAnnotation = mixinAnnotation.visitArray("targets");
+        AnnotationVisitor targetsAnnotation = mixinAnnotation.visitArray("targets");
         for (String target : targets) {
-            targetAnnotation.visit(null, target);
+            targetsAnnotation.visit(null, target);
         }
-        targetAnnotation.visitEnd();
+        targetsAnnotation.visitEnd();
+        // higher priority to apply after other mixins
+        // was intended for other mods that implement super methods via override (not mixin's overwrite, e.g. Enchantment::getMaxLevel),
+        // but injecting in them seems to work regardless of the priority
+        mixinAnnotation.visit("priority", 1500);
         mixinAnnotation.visitEnd();
     }
 
