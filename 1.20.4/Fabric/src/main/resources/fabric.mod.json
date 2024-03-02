@@ -23,10 +23,10 @@
 
   "entrypoints": {
     "main": [
-      "${mainEntryPoint}"
+      "${modGroup}.fabric.impl.EnchantmentControlFabric"
     ],
     "client": [
-      "${clientEntryPoint}"
+      "${modGroup}.fabric.impl.client.EnchantmentControlFabricClient"
     ]
   },
 

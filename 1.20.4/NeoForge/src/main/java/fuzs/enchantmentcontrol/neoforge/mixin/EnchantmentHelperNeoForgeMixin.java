@@ -2,7 +2,7 @@ package fuzs.enchantmentcontrol.neoforge.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
 import net.minecraft.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -24,7 +24,7 @@ abstract class EnchantmentHelperNeoForgeMixin {
     )
     private static Map<Enchantment, Integer> runIterationOnItem(ItemStack itemStack, Operation<Map<Enchantment, Integer>> operation) {
         return operation.call(itemStack).entrySet().stream().filter(entry -> {
-            return ((EnchantmentFeature) entry.getKey()).isEnabled();
+            return ((EnchantmentFeature) entry.getKey()).enchantmentcontrol$isEnabled();
         }).collect(Util.toMap());
     }
 }

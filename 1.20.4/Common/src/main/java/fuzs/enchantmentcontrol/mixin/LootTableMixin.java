@@ -1,9 +1,9 @@
 package fuzs.enchantmentcontrol.mixin;
 
-import fuzs.enchantmentcontrol.EnchantmentControlMod;
-import fuzs.enchantmentcontrol.config.CommonConfig;
-import fuzs.enchantmentcontrol.util.ModEnchantmentHelper;
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
+import fuzs.enchantmentcontrol.impl.EnchantmentControlMod;
+import fuzs.enchantmentcontrol.impl.config.CommonConfig;
+import fuzs.enchantmentcontrol.impl.util.ModEnchantmentHelper;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.world.item.EnchantedBookItem;
@@ -34,7 +34,7 @@ abstract class LootTableMixin {
                 if (itemStack.isEnchanted() || itemStack.getItem() instanceof EnchantedBookItem) {
                     Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(itemStack);
                     boolean result = enchantments.keySet().removeIf(enchantment -> {
-                        return !((EnchantmentFeature) enchantment).isEnabled();
+                        return !((EnchantmentFeature) enchantment).enchantmentcontrol$isEnabled();
                     });
                     if (result) {
                         // custom implementation that turns enchanted books into normal books when there are no enchantments left

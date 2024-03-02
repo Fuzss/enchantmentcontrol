@@ -1,7 +1,7 @@
 package fuzs.enchantmentcontrol.api.v1.data;
 
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentDataImpl;
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentHolder;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentDataImpl;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.ApiStatus;

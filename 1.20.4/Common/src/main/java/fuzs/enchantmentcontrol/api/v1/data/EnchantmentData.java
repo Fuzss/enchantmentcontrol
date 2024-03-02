@@ -1,7 +1,8 @@
 package fuzs.enchantmentcontrol.api.v1.data;
 
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentHolder;
+import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentTags;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.ApiStatus;
@@ -11,7 +12,7 @@ import java.util.List;
 
 /**
  * Basic data holder for enchantments for properties not covered by tags in
- * {@link fuzs.enchantmentcontrol.api.v1.tags.EnchantmentDataTags}.
+ * {@link EnchantmentTags}.
  * <p>
  * All implementations of this interface are immutable (implemented via record).
  */
@@ -52,7 +53,7 @@ public interface EnchantmentData {
      */
     @Nullable
     static EnchantmentData getEnchantmentData(Enchantment enchantment) {
-        EnchantmentHolder holder = ((EnchantmentFeature) enchantment).getHolder();
+        EnchantmentHolder holder = ((EnchantmentFeature) enchantment).enchantmentcontrol$getHolder();
         return holder != null ? holder.getEnchantmentData() : null;
     }
 }

@@ -1,7 +1,7 @@
 package fuzs.enchantmentcontrol.api.v1.tags;
 
 import fuzs.enchantmentcontrol.api.v1.EnchantmentCategories;
-import fuzs.enchantmentcontrol.init.EnchantmentCategoryTagsImpl;
+import fuzs.enchantmentcontrol.impl.init.EnchantmentCategoryTagsImpl;
 import net.minecraft.CharPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -27,51 +27,51 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Enchantment examples: <code>minecraft:protection</code>, <code>minecraft:blast_protection</code>
      */
-    public static final TagKey<Item> ARMOR_ITEM_TAG = getTagKey(EnchantmentCategories.ARMOR);
+    public static final TagKey<Item> ARMOR = getTagKey(EnchantmentCategories.ARMOR);
     /**
      * Tag key: <code>#minecraft:enchantable/foot_armor</code>
      * <p>
-     * Matching items: {@link net.minecraft.world.item.ArmorItem} with
+     * Matching items: {@link net.minecraft.world.item.ArmorItem} for
      * {@link net.minecraft.world.entity.EquipmentSlot#FEET}
      * <p>
      * Item examples: <code>minecraft:leather_boots</code>, <code>minecraft:iron_boots</code>
      * <p>
      * Enchantment examples: <code>minecraft:depth_strider</code>, <code>minecraft:feather_falling</code>
      */
-    public static final TagKey<Item> FOOT_ARMOR_ITEM_TAG = getTagKey(EnchantmentCategories.FOOT_ARMOR);
+    public static final TagKey<Item> FOOT_ARMOR = getTagKey(EnchantmentCategories.FOOT_ARMOR);
     /**
      * Tag key: <code>#minecraft:enchantable/leg_armor</code>
      * <p>
-     * Matching items: {@link net.minecraft.world.item.ArmorItem} with
+     * Matching items: {@link net.minecraft.world.item.ArmorItem} for
      * {@link net.minecraft.world.entity.EquipmentSlot#LEGS}
      * <p>
      * Item examples: <code>minecraft:chainmail_leggings</code>, <code>minecraft:golden_leggings</code>
      * <p>
      * Enchantment examples: <code>minecraft:swift_sneak</code>
      */
-    public static final TagKey<Item> LEG_ARMOR_ITEM_TAG = getTagKey(EnchantmentCategories.LEG_ARMOR);
+    public static final TagKey<Item> LEG_ARMOR = getTagKey(EnchantmentCategories.LEG_ARMOR);
     /**
      * Tag key: <code>#minecraft:enchantable/chest_armor</code>
      * <p>
-     * Matching items: {@link net.minecraft.world.item.ArmorItem} with
+     * Matching items: {@link net.minecraft.world.item.ArmorItem} for
      * {@link net.minecraft.world.entity.EquipmentSlot#CHEST}
      * <p>
      * Item examples: <code>minecraft:golden_chestplate</code>, <code>minecraft:iron_chestplate</code>
      * <p>
      * Enchantment examples: <code>minecraft:thorns</code>
      */
-    public static final TagKey<Item> CHEST_ARMOR_ITEM_TAG = getTagKey(EnchantmentCategories.CHEST_ARMOR);
+    public static final TagKey<Item> CHEST_ARMOR = getTagKey(EnchantmentCategories.CHEST_ARMOR);
     /**
      * Tag key: <code>#minecraft:enchantable/head_armor</code>
      * <p>
-     * Matching items: {@link net.minecraft.world.item.ArmorItem} with
+     * Matching items: {@link net.minecraft.world.item.ArmorItem} for
      * {@link net.minecraft.world.entity.EquipmentSlot#HEAD}
      * <p>
      * Item examples: <code>minecraft:diamond_helmet</code>, <code>minecraft:turtle_helmet</code>
      * <p>
      * Enchantment examples: <code>minecraft:aqua_affinity</code>, <code>minecraft:respiration</code>
      */
-    public static final TagKey<Item> HEAD_ARMOR_ITEM_TAG = getTagKey(EnchantmentCategories.HEAD_ARMOR);
+    public static final TagKey<Item> HEAD_ARMOR = getTagKey(EnchantmentCategories.HEAD_ARMOR);
     /**
      * Tag key: <code>#minecraft:enchantable/weapon</code>
      * <p>
@@ -79,7 +79,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Matching items: {@link net.minecraft.world.item.SwordItem}, {@link net.minecraft.world.item.AxeItem}
      */
-    public static final TagKey<Item> WEAPON_ITEM_TAG = getTagKey(EnchantmentCategories.WEAPON);
+    public static final TagKey<Item> WEAPON = getTagKey(EnchantmentCategories.WEAPON);
     /**
      * Tag key: <code>#minecraft:enchantable/sword</code>
      * <p>
@@ -89,7 +89,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Enchantment examples: <code>minecraft:sharpness</code>, <code>minecraft:looting</code>
      */
-    public static final TagKey<Item> SWORD_ITEM_TAG = getTagKey(EnchantmentCategories.SWORD);
+    public static final TagKey<Item> SWORD = getTagKey(EnchantmentCategories.SWORD);
     /**
      * Tag key: <code>#minecraft:enchantable/mining</code>
      * <p>
@@ -98,7 +98,7 @@ public final class EnchantmentCategoryTags {
      * Item examples: <code>minecraft:iron_pickaxe</code>, <code>minecraft:golden_shovel</code>, ,
      * <code>minecraft:wooden_axe</code>, <code>minecraft:stone_hoe</code>, <code>minecraft:shears</code>
      */
-    public static final TagKey<Item> MINING_ITEM_TAG = getTagKey(EnchantmentCategories.MINING);
+    public static final TagKey<Item> MINING = getTagKey(EnchantmentCategories.MINING);
     /**
      * Tag key: <code>#minecraft:enchantable/mining_loot</code>
      * <p>
@@ -109,7 +109,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Enchantment examples: <code>minecraft:efficiency</code>, <code>minecraft:silk_touch</code>
      */
-    public static final TagKey<Item> MINING_LOOT_ITEM_TAG = getTagKey(EnchantmentCategories.MINING_LOOT);
+    public static final TagKey<Item> MINING_LOOT = getTagKey(EnchantmentCategories.MINING_LOOT);
     /**
      * Tag key: <code>#minecraft:enchantable/fishing</code>
      * <p>
@@ -119,7 +119,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Enchantment examples: <code>minecraft:lure</code>, <code>minecraft:luck_of_the_sea</code>
      */
-    public static final TagKey<Item> FISHING_ITEM_TAG = getTagKey(EnchantmentCategories.FISHING);
+    public static final TagKey<Item> FISHING = getTagKey(EnchantmentCategories.FISHING);
     /**
      * Tag key: <code>#minecraft:enchantable/trident</code>
      * <p>
@@ -129,7 +129,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Enchantment examples: <code>minecraft:impaling</code>, <code>minecraft:channeling</code>
      */
-    public static final TagKey<Item> TRIDENT_ITEM_TAG = getTagKey(EnchantmentCategories.TRIDENT);
+    public static final TagKey<Item> TRIDENT = getTagKey(EnchantmentCategories.TRIDENT);
     /**
      * Tag key: <code>#minecraft:enchantable/durability</code>
      * <p>
@@ -140,7 +140,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Enchantment examples: <code>minecraft:unbreaking</code>, <code>minecraft:mending</code>
      */
-    public static final TagKey<Item> DURABILITY_ITEM_TAG = getTagKey(EnchantmentCategories.DURABILITY);
+    public static final TagKey<Item> DURABILITY = getTagKey(EnchantmentCategories.DURABILITY);
     /**
      * Tag key: <code>#minecraft:enchantable/bow</code>
      * <p>
@@ -150,7 +150,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Enchantment examples: <code>minecraft:power</code>, <code>minecraft:punch</code>
      */
-    public static final TagKey<Item> BOW_ITEM_TAG = getTagKey(EnchantmentCategories.BOW);
+    public static final TagKey<Item> BOW = getTagKey(EnchantmentCategories.BOW);
     /**
      * Tag key: <code>#minecraft:enchantable/equippable</code>
      * <p>
@@ -161,7 +161,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Enchantment examples: <code>minecraft:binding_curse</code>
      */
-    public static final TagKey<Item> EQUIPPABLE_ITEM_TAG = getTagKey(EnchantmentCategories.EQUIPPABLE);
+    public static final TagKey<Item> EQUIPPABLE = getTagKey(EnchantmentCategories.EQUIPPABLE);
     /**
      * Tag key: <code>#minecraft:enchantable/crossbow</code>
      * <p>
@@ -171,7 +171,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Enchantment examples: <code>minecraft:quick_charge</code>, <code>minecraft:piercing</code>
      */
-    public static final TagKey<Item> CROSSBOW_ITEM_TAG = getTagKey(EnchantmentCategories.CROSSBOW);
+    public static final TagKey<Item> CROSSBOW = getTagKey(EnchantmentCategories.CROSSBOW);
     /**
      * Tag key: <code>#minecraft:enchantable/vanishing</code>
      * <p>
@@ -181,7 +181,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Enchantment examples: <code>minecraft:vanishing_curse</code>
      */
-    public static final TagKey<Item> VANISHING_ITEM_TAG = getTagKey(EnchantmentCategories.VANISHING);
+    public static final TagKey<Item> VANISHING = getTagKey(EnchantmentCategories.VANISHING);
     /**
      * Tag key: <code>#enchantmentcontrol:enchantable/shears</code>
      * <p>
@@ -189,7 +189,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Item examples: <code>minecraft:shears</code>
      */
-    public static final TagKey<Item> SHEARS_ITEM_TAG = getTagKey(EnchantmentCategories.SHEARS);
+    public static final TagKey<Item> SHEARS = getTagKey(EnchantmentCategories.SHEARS);
     /**
      * Tag key: <code>#enchantmentcontrol:enchantable/axe</code>
      * <p>
@@ -197,7 +197,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Item examples: <code>minecraft:golden_axe</code>, <code>minecraft:wooden_axe</code>
      */
-    public static final TagKey<Item> AXE_ITEM_TAG = getTagKey(EnchantmentCategories.AXE);
+    public static final TagKey<Item> AXE = getTagKey(EnchantmentCategories.AXE);
     /**
      * Tag key: <code>#enchantmentcontrol:enchantable/horse_armor</code>
      * <p>
@@ -205,7 +205,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Item examples: <code>minecraft:diamond_horse_armor</code>, <code>minecraft:leather_horse_armor</code>
      */
-    public static final TagKey<Item> HORSE_ARMOR_ITEM_TAG = getTagKey(EnchantmentCategories.HORSE_ARMOR);
+    public static final TagKey<Item> HORSE_ARMOR = getTagKey(EnchantmentCategories.HORSE_ARMOR);
     /**
      * Tag key: <code>#enchantmentcontrol:enchantable/shield</code>
      * <p>
@@ -213,7 +213,7 @@ public final class EnchantmentCategoryTags {
      * <p>
      * Item examples: <code>minecraft:shield</code>
      */
-    public static final TagKey<Item> SHIELD_ITEM_TAG = getTagKey(EnchantmentCategories.SHIELD);
+    public static final TagKey<Item> SHIELD = getTagKey(EnchantmentCategories.SHIELD);
 
     private EnchantmentCategoryTags() {
         // NO-OP

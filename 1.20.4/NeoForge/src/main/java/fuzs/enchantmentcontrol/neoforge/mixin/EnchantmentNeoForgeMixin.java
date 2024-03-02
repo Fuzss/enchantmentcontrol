@@ -1,7 +1,7 @@
 package fuzs.enchantmentcontrol.neoforge.mixin;
 
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentHolder;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,7 +37,7 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             remap = false
     )
     public void getMinLevel(CallbackInfoReturnable<Integer> callback) {
-        this.ifHolderPresent(holder -> holder.getEnchantmentData().minLevel(), callback::setReturnValue);
+        EnchantmentHolder.ifPresent(this, holder -> holder.getEnchantmentData().minLevel(), callback::setReturnValue);
     }
 
     @SuppressWarnings("target")
@@ -49,7 +49,7 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             remap = false
     )
     public void getMaxLevel(CallbackInfoReturnable<Integer> callback) {
-        this.ifHolderPresent(holder -> holder.getEnchantmentData().maxLevel(), callback::setReturnValue);
+        EnchantmentHolder.ifPresent(this, holder -> holder.getEnchantmentData().maxLevel(), callback::setReturnValue);
     }
 
     @SuppressWarnings("target")
@@ -61,7 +61,7 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             }, at = @At("HEAD"), cancellable = true, require = 0, remap = false
     )
     public void canEnchant(ItemStack itemStack, CallbackInfoReturnable<Boolean> callback) {
-        this.ifHolderPresent(holder -> itemStack.is(holder.getAnvilItemTag()), callback::setReturnValue, false);
+        EnchantmentHolder.ifPresent(this, holder -> itemStack.is(holder.getAnvilItemTag()), callback::setReturnValue, false);
     }
 
     @SuppressWarnings("target")
@@ -73,7 +73,7 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             remap = false
     )
     public void isTreasureOnly(CallbackInfoReturnable<Boolean> callback) {
-        this.ifHolderPresent(EnchantmentHolder::isTreasureOnly, callback::setReturnValue);
+        EnchantmentHolder.ifPresent(this, EnchantmentHolder::isTreasureOnly, callback::setReturnValue);
     }
 
     @SuppressWarnings("target")
@@ -85,7 +85,7 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             remap = false
     )
     public void isCurse(CallbackInfoReturnable<Boolean> callback) {
-        this.ifHolderPresent(EnchantmentHolder::isCurse, callback::setReturnValue);
+        EnchantmentHolder.ifPresent(this, EnchantmentHolder::isCurse, callback::setReturnValue);
     }
 
     @SuppressWarnings("target")
@@ -97,7 +97,7 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             remap = false
     )
     public void isTradeable(CallbackInfoReturnable<Boolean> callback) {
-        this.ifHolderPresent(EnchantmentHolder::isTradeable, callback::setReturnValue, false);
+        EnchantmentHolder.ifPresent(this, EnchantmentHolder::isTradeable, callback::setReturnValue, false);
     }
 
     @SuppressWarnings("target")
@@ -109,7 +109,7 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             remap = false
     )
     public void isDiscoverable(CallbackInfoReturnable<Boolean> callback) {
-        this.ifHolderPresent(EnchantmentHolder::isDiscoverable, callback::setReturnValue, false);
+        EnchantmentHolder.ifPresent(this, EnchantmentHolder::isDiscoverable, callback::setReturnValue, false);
     }
 
     @SuppressWarnings("target")
@@ -119,7 +119,7 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             }, at = @At("HEAD"), cancellable = true, require = 0, remap = false
     )
     public void canApplyAtEnchantingTable(ItemStack itemStack, CallbackInfoReturnable<Boolean> callback) {
-        this.ifHolderPresent(holder -> itemStack.is(holder.getEnchantingTableItemTag()),
+        EnchantmentHolder.ifPresent(this, holder -> itemStack.is(holder.getEnchantingTableItemTag()),
                 callback::setReturnValue,
                 false
         );

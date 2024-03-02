@@ -3,7 +3,7 @@ package fuzs.enchantmentcontrol.api.v1.data;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentDataImpl;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentDataImpl;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;

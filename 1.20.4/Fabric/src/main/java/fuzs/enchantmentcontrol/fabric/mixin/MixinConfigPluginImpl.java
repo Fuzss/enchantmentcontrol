@@ -1,6 +1,6 @@
 package fuzs.enchantmentcontrol.fabric.mixin;
 
-import fuzs.enchantmentcontrol.handler.EnchantmentClassesCache;
+import fuzs.enchantmentcontrol.impl.handler.EnchantmentClassesCache;
 import fuzs.enchantmentcontrol.mixin.AbstractMixinConfigPlugin;
 
 import java.lang.invoke.MethodHandle;
@@ -17,34 +17,35 @@ public class MixinConfigPluginImpl extends AbstractMixinConfigPlugin {
 
     @Override
     protected Consumer<URL> getClassLoaderURLConsumer(ClassLoader classLoader, String packageName) {
-        // we want to find ClassLoaderAccess::addUrlFwd
-        Method foundMethod = null;
+        Method method = findAddUrlFwdMethod(classLoader);
+        try {
+            method.setAccessible(true);
+            MethodHandle handle = MethodHandles.lookup().unreflect(method);
+            return (URL url) -> {
+                try {
+                    handle.invoke(classLoader, url);
+                } catch (Throwable throwable) {
+                    throw new RuntimeException("Unexpected error adding URL", throwable);
+                }
+            };
+        } catch (IllegalAccessException exception) {
+            throw new RuntimeException("Couldn't get handle for " + method, exception);
+        }
+    }
+
+    /**
+     * We want to find {@link net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess#addUrlFwd(URL)}.
+     */
+    protected static Method findAddUrlFwdMethod(ClassLoader classLoader) {
         Class<? extends ClassLoader> clazz = classLoader.getClass();
         for (Method method : clazz.getDeclaredMethods()) {
             if (method.getReturnType() == void.class) {
                 if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == URL.class) {
-                    foundMethod = method;
-                    break;
+                    return method;
                 }
             }
         }
 
-        if (foundMethod == null) {
-            throw new IllegalStateException("Couldn't find method in " + classLoader);
-        } else {
-            try {
-                foundMethod.setAccessible(true);
-                MethodHandle handle = MethodHandles.lookup().unreflect(foundMethod);
-                return (URL url) -> {
-                    try {
-                        handle.invoke(classLoader, url);
-                    } catch (Throwable throwable) {
-                        throw new RuntimeException("Unexpected error adding URL", throwable);
-                    }
-                };
-            } catch (IllegalAccessException exception) {
-                throw new RuntimeException("Couldn't get handle for " + foundMethod, exception);
-            }
-        }
+        throw new IllegalStateException("Couldn't find method in " + classLoader);
     }
 }

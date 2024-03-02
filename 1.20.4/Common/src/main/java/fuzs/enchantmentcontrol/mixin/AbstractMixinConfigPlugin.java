@@ -1,7 +1,7 @@
 package fuzs.enchantmentcontrol.mixin;
 
 import com.google.common.collect.Maps;
-import fuzs.enchantmentcontrol.EnchantmentControl;
+import fuzs.enchantmentcontrol.impl.EnchantmentControl;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;

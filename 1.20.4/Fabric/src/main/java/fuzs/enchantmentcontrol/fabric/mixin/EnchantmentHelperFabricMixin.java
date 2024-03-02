@@ -2,7 +2,7 @@ package fuzs.enchantmentcontrol.fabric.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import fuzs.enchantmentcontrol.world.item.enchantment.EnchantmentFeature;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -23,7 +23,7 @@ abstract class EnchantmentHelperFabricMixin {
     )
     private static Optional<Enchantment> runIterationOnItem(Registry<Enchantment> registry, ResourceLocation resourceLocation, Operation<Optional<Enchantment>> operation) {
         return operation.call(registry, resourceLocation).filter(enchantment -> {
-            return ((EnchantmentFeature) enchantment).isEnabled();
+            return ((EnchantmentFeature) enchantment).enchantmentcontrol$isEnabled();
         });
     }
 }
