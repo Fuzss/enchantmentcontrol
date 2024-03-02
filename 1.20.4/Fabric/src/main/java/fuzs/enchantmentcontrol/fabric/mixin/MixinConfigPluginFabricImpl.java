@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.function.Consumer;
 
-public class MixinConfigPluginImpl extends AbstractMixinConfigPlugin {
+public class MixinConfigPluginFabricImpl extends AbstractMixinConfigPlugin {
 
     static {
         register("EnchantmentFabricMixin", EnchantmentClassesCache::load);

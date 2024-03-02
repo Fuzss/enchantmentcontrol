@@ -13,7 +13,7 @@ import java.net.URLClassLoader;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class MixinConfigPluginImpl extends AbstractMixinConfigPlugin {
+public class MixinConfigPluginForgeImpl extends AbstractMixinConfigPlugin {
 
     static {
         register("EnchantmentForgeMixin", EnchantmentClassesCache::load);

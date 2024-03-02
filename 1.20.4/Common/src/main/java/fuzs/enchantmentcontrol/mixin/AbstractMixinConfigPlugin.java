@@ -30,7 +30,8 @@ import java.util.function.Supplier;
  * <li>Only applying to the base enchantment class is not sufficient, as most methods are designed to be
  * overridden</li>
  * <li>Also modifying the callsites (an approach the Apotheosis mod has taken) is not an option, since there is no way
- * for preventing other mods from using the vanilla methods</li>
+ * for preventing other mods from using the vanilla methods, and mods that want to support Apotheosis' system must
+ * introduce a hard-dependency to do so</li>
  * </ul>
  * All class targets for our dynamic enchantment mixin are
  * determined at runtime from all registered enchantments and stored to a cache file that can be used for future
