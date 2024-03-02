@@ -29,7 +29,7 @@ public class DynamicItemTagProvider extends AbstractTagProvider<Item> {
         for (EnchantmentHolder holder : EnchantmentHolder.values()) {
             Enchantment enchantment = holder.getEnchantment();
             if (!this.skipHolderValidation) {
-                EnchantmentHolder.testIsNull(enchantment);
+                EnchantmentHolder.isOriginalState(enchantment);
             }
             addAllMatchingItems(this.add(holder.getEnchantingTableItemTag()), (Item item) -> {
                 // we do not use our dynamic enchantment category tags here since Forge overrides that with a method which allows for additional items

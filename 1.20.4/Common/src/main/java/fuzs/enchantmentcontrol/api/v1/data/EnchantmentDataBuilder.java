@@ -1,7 +1,6 @@
 package fuzs.enchantmentcontrol.api.v1.data;
 
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentDataImpl;
-import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.ApiStatus;
@@ -47,20 +46,12 @@ public interface EnchantmentDataBuilder extends EnchantmentData {
      * Create a new enchantment data instance from an enchantment.
      * <p>
      * It is checked that enchantment values are in their original state (without having any changes applied from this
-     * mod). To ensure the state is reset properly {@link #clearAll()} should be run before data generation happens.
+     * mod). To ensure the state is reset properly {@link EnchantmentDataHelper#clearAll()} should be run before data generation happens.
      *
      * @param enchantment the enchantment
      * @return the new enchantment data
      */
     static EnchantmentDataBuilder fromEnchantment(Enchantment enchantment) {
         return EnchantmentDataImpl.fromEnchantment(enchantment);
-    }
-
-    /**
-     * Clear all existing enchantment data. Must be run before data generation happens to ensure used values are in
-     * their original state.
-     */
-    static void clearAll() {
-        EnchantmentHolder.clearAll();
     }
 }

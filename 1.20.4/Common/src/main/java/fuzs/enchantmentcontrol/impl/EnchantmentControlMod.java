@@ -1,6 +1,7 @@
 package fuzs.enchantmentcontrol.impl;
 
 import fuzs.enchantmentcontrol.api.v1.EnchantmentCategories;
+import fuzs.enchantmentcontrol.api.v1.data.EnchantmentDataHelper;
 import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentTags;
 import fuzs.enchantmentcontrol.impl.client.commands.EnchantmentDataCommand;
 import fuzs.enchantmentcontrol.impl.config.CommonConfig;
@@ -27,7 +28,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.resources.IoSupplier;
 
+import java.io.InputStream;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -65,11 +69,11 @@ public class EnchantmentControlMod extends EnchantmentControl implements ModCons
             // checking the tag here only seems to work on Fabric, Forge-like is handled when data reloads
             // this happens before data pack contents are synced, so we don't need it on the client
             if (!client && !EnchantmentClassesCache.isFailedLoad()) {
-                for (EnchantmentHolder holder : EnchantmentHolder.values()) {
+                EnchantmentHolder.forEach(holder -> {
                     if (holder.is(EnchantmentTags.UNTOUCHED)) {
                         holder.setEnchantmentData(null);
                     }
-                }
+                });
             }
         });
     }
@@ -78,15 +82,18 @@ public class EnchantmentControlMod extends EnchantmentControl implements ModCons
     public void onAddDataPackFinders(PackRepositorySourcesContext context) {
         context.addRepositorySource(PackResourcesHelper.buildServerPack(id("enchantments"),
                 () -> new DynamicPackResources(EnchantmentDataCommand.getEnchantmentDataFactories(false)) {
-
                     @Override
-                    protected void setup() {
-                        EnchantmentHolder.clearAll();
+                    protected Map<PackType, Map<ResourceLocation, IoSupplier<InputStream>>> generatePathsFromProviders() {
+                        EnchantmentDataHelper.unbindAll();
+                        Map<PackType, Map<ResourceLocation, IoSupplier<InputStream>>> paths = super.generatePathsFromProviders();
+                        EnchantmentDataHelper.bindAll();
+                        return paths;
                     }
                 },
                 PackResourcesHelper.getPackTitle(PackType.SERVER_DATA),
                 PackResourcesHelper.getPackDescription(MOD_ID),
                 true,
+                // make sure to apply this at bottom, so that other dynamic packs will take precedence
                 Pack.Position.BOTTOM,
                 false,
                 false

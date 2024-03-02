@@ -30,7 +30,7 @@ public class DynamicEnchantmentTagProvider extends AbstractTagProvider<Enchantme
         for (EnchantmentHolder holder : EnchantmentHolder.values()) {
             Enchantment enchantment = holder.getEnchantment();
             if (!this.skipHolderValidation) {
-                EnchantmentHolder.testIsNull(enchantment);
+                EnchantmentHolder.isOriginalState(enchantment);
             }
             this.buildEnchantmentTag(holder.getIncompatibleEnchantmentTag(), (Enchantment other) -> {
                 return enchantment != other && !enchantment.isCompatibleWith(other);
@@ -46,7 +46,7 @@ public class DynamicEnchantmentTagProvider extends AbstractTagProvider<Enchantme
         AbstractTagAppender<Enchantment> tagAppender = this.add(tagKey);
         for (Enchantment enchantment : BuiltInRegistries.ENCHANTMENT) {
             if (testHolder && !this.skipHolderValidation) {
-                EnchantmentHolder.testIsNull(enchantment);
+                EnchantmentHolder.isOriginalState(enchantment);
             }
             if (predicate.test(enchantment)) {
                 tagAppender.add(enchantment);

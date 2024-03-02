@@ -1,8 +1,8 @@
 package fuzs.enchantmentcontrol.impl.client;
 
+import fuzs.enchantmentcontrol.api.v1.data.EnchantmentDataHelper;
 import fuzs.enchantmentcontrol.impl.client.gui.screens.InvalidCacheOnboardingScreen;
 import fuzs.enchantmentcontrol.impl.handler.EnchantmentClassesCache;
-import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.api.client.event.v1.entity.player.ClientPlayerNetworkEvents;
 import fuzs.puzzleslib.api.client.event.v1.gui.ScreenOpeningCallback;
@@ -21,7 +21,7 @@ public class EnchantmentControlClient implements ClientModConstructor {
 
     private static void registerEventHandlers() {
         ClientPlayerNetworkEvents.LOGGED_OUT.register((LocalPlayer player, MultiPlayerGameMode multiPlayerGameMode, Connection connection) -> {
-            EnchantmentHolder.clearAll();
+            EnchantmentDataHelper.clearAll();
         });
         ScreenOpeningCallback.EVENT.register((oldScreen, newScreen) -> {
             if (newScreen.get() instanceof TitleScreen && EnchantmentClassesCache.isFailedLoad() &&

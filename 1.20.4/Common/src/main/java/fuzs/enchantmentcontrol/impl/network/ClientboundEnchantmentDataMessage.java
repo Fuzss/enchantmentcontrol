@@ -1,5 +1,6 @@
 package fuzs.enchantmentcontrol.impl.network;
 
+import fuzs.enchantmentcontrol.api.v1.data.EnchantmentDataHelper;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentDataImpl;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import fuzs.puzzleslib.api.network.v3.ClientMessageListener;
@@ -18,7 +19,7 @@ public record ClientboundEnchantmentDataMessage(Map<ResourceLocation, Enchantmen
         return new ClientMessageListener<>() {
             @Override
             public void handle(ClientboundEnchantmentDataMessage message, Minecraft client, ClientPacketListener handler, LocalPlayer player, ClientLevel level) {
-                EnchantmentHolder.clearAll();
+                EnchantmentDataHelper.clearAll();
                 for (Map.Entry<ResourceLocation, EnchantmentDataImpl> entry : message.enchantmentData.entrySet()) {
                     ResourceLocation resourceLocation = entry.getKey();
                     EnchantmentHolder holder = EnchantmentHolder.getHolder(resourceLocation);

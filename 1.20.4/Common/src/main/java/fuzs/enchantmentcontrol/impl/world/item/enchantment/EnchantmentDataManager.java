@@ -3,6 +3,7 @@ package fuzs.enchantmentcontrol.impl.world.item.enchantment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import fuzs.enchantmentcontrol.api.v1.data.EnchantmentDataHelper;
 import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentTags;
 import fuzs.enchantmentcontrol.impl.EnchantmentControlMod;
 import fuzs.enchantmentcontrol.impl.handler.EnchantmentClassesCache;
@@ -24,7 +25,7 @@ public final class EnchantmentDataManager extends SimpleJsonResourceReloadListen
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
         if (!EnchantmentClassesCache.isFailedLoad()) {
-            EnchantmentHolder.clearAll();
+            EnchantmentDataHelper.clearAll();
             for (EnchantmentHolder holder : EnchantmentHolder.values()) {
                 // checking the tag here only seems to work on Forge-like, Fabric is handled when tags update
                 if (!holder.is(EnchantmentTags.UNTOUCHED)) {

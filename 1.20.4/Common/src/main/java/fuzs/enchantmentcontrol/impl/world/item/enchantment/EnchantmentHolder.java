@@ -36,7 +36,7 @@ public final class EnchantmentHolder {
     public EnchantmentHolder(Holder.Reference<Enchantment> holder) {
         Enchantment enchantment = holder.value();
         ResourceLocation resourceLocation = holder.key().location();
-        testIsNull(enchantment);
+        isOriginalState(enchantment);
         this.holder = holder;
         this.enchantmentData = this.originalEnchantmentData = EnchantmentDataImpl.fromEnchantment(enchantment);
         this.tagBasedEnchantmentCategory = this.createTagBasedEnchantmentCategory(resourceLocation);
@@ -65,7 +65,19 @@ public final class EnchantmentHolder {
 
     public static void clearAll() {
         if (!EnchantmentClassesCache.isFailedLoad()) {
-            values().forEach(holder -> holder.setEnchantmentData(null));
+            forEach(holder -> holder.setEnchantmentData(null));
+        }
+    }
+
+    public static void bindAll() {
+        if (!EnchantmentClassesCache.isFailedLoad()) {
+            forEach(holder -> holder.getEnchantment().enchantmentcontrol$setHolder(holder));
+        }
+    }
+
+    public static void unbindAll() {
+        if (!EnchantmentClassesCache.isFailedLoad()) {
+            forEach(holder -> holder.getEnchantment().enchantmentcontrol$setHolder(null));
         }
     }
 
@@ -74,7 +86,7 @@ public final class EnchantmentHolder {
         return BY_ENCHANTMENT_LOCATION.get(resourceLocation);
     }
 
-    public static void testIsNull(Enchantment enchantment) {
+    public static void isOriginalState(Enchantment enchantment) {
         Preconditions.checkState(((EnchantmentFeature) enchantment).enchantmentcontrol$getHolder() == null,
                 "holder is still set"
         );
@@ -97,8 +109,8 @@ public final class EnchantmentHolder {
         return this.holder.key().location();
     }
 
-    public Enchantment getEnchantment() {
-        return this.holder.value();
+    public <T extends Enchantment & EnchantmentFeature> T getEnchantment() {
+        return (T) this.holder.value();
     }
 
     public EnchantmentCategory getTagBasedEnchantmentCategory() {
@@ -124,9 +136,9 @@ public final class EnchantmentHolder {
     public void setEnchantmentData(@Nullable EnchantmentData enchantmentData) {
         if (enchantmentData == null) {
             enchantmentData = this.originalEnchantmentData;
-            ((EnchantmentFeature) this.getEnchantment()).enchantmentcontrol$setHolder(null);
+            this.getEnchantment().enchantmentcontrol$setHolder(null);
         } else {
-            ((EnchantmentFeature) this.getEnchantment()).enchantmentcontrol$setHolder(this);
+            this.getEnchantment().enchantmentcontrol$setHolder(this);
         }
 
         ((EnchantmentDataImpl) enchantmentData).apply(this.getEnchantment());

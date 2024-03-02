@@ -145,7 +145,7 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
 
     public static EnchantmentDataBuilder fromEnchantment(Enchantment enchantment, boolean skipHolderValidation) {
         if (!skipHolderValidation) {
-            EnchantmentHolder.testIsNull(enchantment);
+            EnchantmentHolder.isOriginalState(enchantment);
         }
         return new EnchantmentDataImpl(enchantment.category,
                 enchantment.rarity,
