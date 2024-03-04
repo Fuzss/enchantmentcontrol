@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import fuzs.enchantmentcontrol.api.v1.data.EnchantmentData;
 import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentTags;
 import fuzs.enchantmentcontrol.impl.EnchantmentControlMod;
-import fuzs.enchantmentcontrol.impl.handler.EnchantmentClassesCache;
 import fuzs.enchantmentcontrol.impl.init.ModRegistry;
 import fuzs.extensibleenums.api.v2.CommonAbstractions;
 import fuzs.puzzleslib.api.init.v3.registry.RegistryHelper;
@@ -64,21 +63,15 @@ public final class EnchantmentHolder {
     }
 
     public static void clearAll() {
-        if (!EnchantmentClassesCache.isFailedLoad()) {
-            forEach(holder -> holder.setEnchantmentData(null));
-        }
+        forEach(holder -> holder.setEnchantmentData(null));
     }
 
     public static void bindAll() {
-        if (!EnchantmentClassesCache.isFailedLoad()) {
-            forEach(holder -> holder.getEnchantment().enchantmentcontrol$setHolder(holder));
-        }
+        forEach(holder -> holder.getEnchantment().enchantmentcontrol$setHolder(holder));
     }
 
     public static void unbindAll() {
-        if (!EnchantmentClassesCache.isFailedLoad()) {
-            forEach(holder -> holder.getEnchantment().enchantmentcontrol$setHolder(null));
-        }
+        forEach(holder -> holder.getEnchantment().enchantmentcontrol$setHolder(null));
     }
 
     @Nullable

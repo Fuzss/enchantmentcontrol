@@ -54,21 +54,19 @@ public class EnchantmentControlMod extends EnchantmentControl implements ModCons
             BuiltInRegistries.ENCHANTMENT.holders().forEach(EnchantmentHolder::new);
         });
         SyncDataPackContentsCallback.EVENT.register((ServerPlayer player, boolean joined) -> {
-            if (!EnchantmentClassesCache.isFailedLoad()) {
-                NETWORK.sendMessage(PlayerSet.ofPlayer(player),
-                        new ClientboundEnchantmentDataMessage(EnchantmentHolder.values()
-                                .stream()
-                                .filter(Predicate.not(EnchantmentHolder::isOriginalEnchantmentData))
-                                .collect(Collectors.toMap(EnchantmentHolder::getResourceLocation,
-                                        holder -> ((EnchantmentDataImpl) holder.getEnchantmentData())
-                                )))
-                );
-            }
+            NETWORK.sendMessage(PlayerSet.ofPlayer(player),
+                    new ClientboundEnchantmentDataMessage(EnchantmentHolder.values()
+                            .stream()
+                            .filter(Predicate.not(EnchantmentHolder::isOriginalEnchantmentData))
+                            .collect(Collectors.toMap(EnchantmentHolder::getResourceLocation,
+                                    holder -> ((EnchantmentDataImpl) holder.getEnchantmentData())
+                            )))
+            );
         });
         TagsUpdatedCallback.EVENT.register((registryAccess, client) -> {
             // checking the tag here only seems to work on Fabric, Forge-like is handled when data reloads
             // this happens before data pack contents are synced, so we don't need it on the client
-            if (!client && !EnchantmentClassesCache.isFailedLoad()) {
+            if (!client) {
                 EnchantmentHolder.forEach(holder -> {
                     if (holder.is(EnchantmentTags.UNTOUCHED)) {
                         holder.setEnchantmentData(null);

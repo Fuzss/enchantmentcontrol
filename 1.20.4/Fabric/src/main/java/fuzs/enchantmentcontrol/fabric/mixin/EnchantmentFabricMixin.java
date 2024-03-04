@@ -3,7 +3,7 @@ package fuzs.enchantmentcontrol.fabric.mixin;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,7 +25,42 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * {@link Class#getResourceAsStream(String)} seems to be unable to load resources from a package that is not a
  * subpackage.
  */
-@Mixin(Enchantment.class)
+@Mixin(
+        value = {
+                ArrowDamageEnchantment.class,
+                ArrowFireEnchantment.class,
+                ArrowInfiniteEnchantment.class,
+                ArrowKnockbackEnchantment.class,
+                ArrowPiercingEnchantment.class,
+                BindingCurseEnchantment.class,
+                DamageEnchantment.class,
+                DigDurabilityEnchantment.class,
+                DiggingEnchantment.class,
+                Enchantment.class,
+                FireAspectEnchantment.class,
+                FishingSpeedEnchantment.class,
+                FrostWalkerEnchantment.class,
+                KnockbackEnchantment.class,
+                LootBonusEnchantment.class,
+                MendingEnchantment.class,
+                MultiShotEnchantment.class,
+                OxygenEnchantment.class,
+                ProtectionEnchantment.class,
+                QuickChargeEnchantment.class,
+                SoulSpeedEnchantment.class,
+                SweepingEdgeEnchantment.class,
+                SwiftSneakEnchantment.class,
+                ThornsEnchantment.class,
+                TridentChannelingEnchantment.class,
+                TridentImpalerEnchantment.class,
+                TridentLoyaltyEnchantment.class,
+                TridentRiptideEnchantment.class,
+                UntouchingEnchantment.class,
+                VanishingCurseEnchantment.class,
+                WaterWalkerEnchantment.class,
+                WaterWorkerEnchantment.class
+        }, priority = 1500
+)
 abstract class EnchantmentFabricMixin implements EnchantmentFeature {
 
     @SuppressWarnings("target")
@@ -61,7 +96,11 @@ abstract class EnchantmentFabricMixin implements EnchantmentFeature {
             }, at = @At("HEAD"), cancellable = true, require = 0, remap = false
     )
     public void canEnchant(ItemStack itemStack, CallbackInfoReturnable<Boolean> callback) {
-        EnchantmentHolder.ifPresent(this, holder -> itemStack.is(holder.getAnvilItemTag()), callback::setReturnValue, false);
+        EnchantmentHolder.ifPresent(this,
+                holder -> itemStack.is(holder.getAnvilItemTag()),
+                callback::setReturnValue,
+                false
+        );
     }
 
     @SuppressWarnings("target")

@@ -48,12 +48,13 @@ import java.util.function.Supplier;
  * Forge &amp; NeoForge.
  */
 public abstract class AbstractMixinConfigPlugin implements IMixinConfigPlugin {
-    private static final Map<String, Supplier<List<String>>> DYNAMIC_MIXINS = Maps.newLinkedHashMap();
+    private static final Map<String, Supplier<List<String>>> DYNAMIC_MIXIN_TARGETS = Maps.newLinkedHashMap();
+    private static final List<String> PLUGIN_PROVIDED_MIXINS = new ArrayList<>();
     private static final String DYNAMIC_MIXIN_CLASSES_SUB_PACKAGE = "dynamic";
     private static boolean applied;
 
     protected static void register(String mixinClassName, Supplier<List<String>> targetClasses) {
-        DYNAMIC_MIXINS.put(mixinClassName.replace('.', '/'), targetClasses);
+        DYNAMIC_MIXIN_TARGETS.put(mixinClassName.replace('.', '/'), targetClasses);
     }
 
     @Override
@@ -68,23 +69,26 @@ public abstract class AbstractMixinConfigPlugin implements IMixinConfigPlugin {
         mixinPackage = mixinPackage.replace('.', '/');
 
         Map<String, byte[]> classGenerators = Maps.newHashMap();
-        Iterator<Map.Entry<String, Supplier<List<String>>>> iterator = DYNAMIC_MIXINS.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Supplier<List<String>>> entry = iterator.next();
+        for (Map.Entry<String, Supplier<List<String>>> entry : DYNAMIC_MIXIN_TARGETS.entrySet()) {
+            String mixinClassName = entry.getKey();
+            // the mixin by default targets all vanilla classes, so even if we don't have any targets cached from a previous run this will at least work for vanilla
+            // in that case simply apply the mixin normally without any bytecode / class changes
             List<String> targets = entry.getValue().get();
             if (!targets.isEmpty()) {
                 this.loadAndExpandMixinTargets(this.getClass(),
                         mixinPackage,
-                        entry.getKey(),
+                        mixinClassName,
                         targets,
                         classGenerators::put
                 );
-            } else {
-                // remove this for IMixinConfigPlugin::getMixins
-                iterator.remove();
+
+                mixinClassName = DYNAMIC_MIXIN_CLASSES_SUB_PACKAGE + "." + mixinClassName;
             }
+
+            PLUGIN_PROVIDED_MIXINS.add(mixinClassName.replace("/", "."));
         }
 
+        // maybe refactor this to fall back to applying mixin normally when there is an error here?
         if (!classGenerators.isEmpty()) {
             Consumer<URL> addUrlFwd = this.getClassLoaderURLConsumer(this.getClass().getClassLoader(),
                     getDynamicMixinClassesSubPackage(mixinPackage)
@@ -110,9 +114,7 @@ public abstract class AbstractMixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public List<String> getMixins() {
-        return DYNAMIC_MIXINS.keySet().stream().map((String clazzName) -> {
-            return DYNAMIC_MIXIN_CLASSES_SUB_PACKAGE + "." + clazzName.replace("/", ".");
-        }).toList();
+        return PLUGIN_PROVIDED_MIXINS;
     }
 
     @Override
@@ -141,7 +143,7 @@ public abstract class AbstractMixinConfigPlugin implements IMixinConfigPlugin {
             ClassNode classNode = new ClassNode();
             classReader.accept(classNode, 0);
 
-            this.expandMixinClazzTargets(classNode, targets);
+            this.expandMixinClassTargets(classNode, targets);
 
             ClassWriter classWriter = new ClassWriter(0);
             classNode.accept(classWriter);
@@ -157,7 +159,7 @@ public abstract class AbstractMixinConfigPlugin implements IMixinConfigPlugin {
         }
     }
 
-    protected void expandMixinClazzTargets(ClassNode classNode, List<String> targets) {
+    protected void expandMixinClassTargets(ClassNode classNode, List<String> targets) {
         classNode.invisibleAnnotations.removeIf((AnnotationNode annotationNode) -> {
             return annotationNode.desc.equals("Lorg/spongepowered/asm/mixin/Mixin;");
         });

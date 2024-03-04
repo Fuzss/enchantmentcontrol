@@ -18,7 +18,9 @@ public class InvalidCacheOnboardingScreen extends Screen {
     public static final Component TEXT_COMPONENT = Component.literal(
             "Found invalid cache for " + EnchantmentControl.MOD_NAME +
                     " mod!\n\nCustom enchantment settings will only apply after a game restart.");
-    private static boolean hasSeenOnboardingScreen;
+    // disabled for now, as vanilla configuration always loads even without the cache
+    // currently set to false to allow the screen to show again
+    private static boolean hasSeenOnboardingScreen = true;
 
     private final PanoramaRenderer panorama = new PanoramaRenderer(TitleScreen.CUBE_MAP);
     private final LogoRenderer logoRenderer = new LogoRenderer(true);

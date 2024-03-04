@@ -19,7 +19,8 @@ public final class EnchantmentTags {
      */
     public static final TagKey<Enchantment> TRADEABLE = ModRegistry.TRADEABLE_ENCHANTMENT_TAG;
     /**
-     * Enchantments that cannot be obtained at an enchanting table.
+     * Enchantments that cannot be obtained at an enchanting table. They are usually found in chest loot, or obtained
+     * from trading. Librarian villagers will charge double for these.
      * <p>
      * Equivalent to {@link Enchantment#isTreasureOnly()}.
      */

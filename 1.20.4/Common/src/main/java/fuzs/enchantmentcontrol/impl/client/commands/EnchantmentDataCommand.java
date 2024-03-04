@@ -45,7 +45,7 @@ public class EnchantmentDataCommand {
 
     public static int triggerExport(Consumer<Component> feedbackConsumer, Consumer<Component> errorConsumer) throws CommandSyntaxException {
         if (EnchantmentClassesCache.isFailedLoad()) {
-            throw ERROR_FAILED_EXPORT.create("Invalid configuration present");
+            throw ERROR_FAILED_EXPORT.create("Invalid configuration present, please restart your game");
         } else {
             // currently only a client command since initially implemented this way, too lazy to change that right now
             Util.ioPool().execute(() -> {
