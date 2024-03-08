@@ -85,16 +85,17 @@ public final class EnchantmentHolder {
         );
     }
 
-    public static <T> void ifPresent(EnchantmentFeature enchantmentFeature, Function<EnchantmentHolder, T> valueExtractor, Consumer<T> valueConsumer) {
+    public static <T> void ifPresent(EnchantmentFeature enchantmentFeature, Function<EnchantmentHolder, @Nullable T> valueExtractor, Consumer<T> valueConsumer) {
         ifPresent(enchantmentFeature, valueExtractor, valueConsumer, null);
     }
 
-    public static <T> void ifPresent(EnchantmentFeature enchantmentFeature, Function<EnchantmentHolder, T> valueExtractor, Consumer<T> valueConsumer, @Nullable T fallback) {
+    public static <T> void ifPresent(EnchantmentFeature enchantmentFeature, Function<EnchantmentHolder, @Nullable T> valueExtractor, Consumer<T> valueConsumer, @Nullable T fallback) {
         EnchantmentHolder holder = enchantmentFeature.enchantmentcontrol$getHolder();
         if (holder != null && (enchantmentFeature.enchantmentcontrol$isEnabled() || fallback != null)) {
-            valueConsumer.accept(enchantmentFeature.enchantmentcontrol$isEnabled() ?
-                    valueExtractor.apply(holder) :
-                    fallback);
+            T returnValue = enchantmentFeature.enchantmentcontrol$isEnabled() ? valueExtractor.apply(holder) : fallback;
+            if (returnValue != null) {
+                valueConsumer.accept(returnValue);
+            }
         }
     }
 

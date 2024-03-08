@@ -37,6 +37,18 @@ public interface EnchantmentDataBuilder extends EnchantmentData {
     EnchantmentDataBuilder withMaxLevel(int maxLevel);
 
     /**
+     * @param minCost the new minimum cost formula
+     * @return the new enchantment data
+     */
+    EnchantmentDataBuilder withMinCost(String minCost);
+
+    /**
+     * @param maxCost the new maximum cost formula
+     * @return the new enchantment data
+     */
+    EnchantmentDataBuilder withMaxCost(String maxCost);
+
+    /**
      * @param aliases the new enchantment aliases
      * @return the new enchantment data
      */
@@ -46,7 +58,8 @@ public interface EnchantmentDataBuilder extends EnchantmentData {
      * Create a new enchantment data instance from an enchantment.
      * <p>
      * It is checked that enchantment values are in their original state (without having any changes applied from this
-     * mod). To ensure the state is reset properly {@link EnchantmentDataHelper#clearAll()} should be run before data generation happens.
+     * mod). To ensure the state is reset properly {@link EnchantmentDataHelper#clearAll()} should be run before data
+     * generation happens.
      *
      * @param enchantment the enchantment
      * @return the new enchantment data

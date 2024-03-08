@@ -1,6 +1,7 @@
 package fuzs.enchantmentcontrol.api.v1.data;
 
 import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentTags;
+import fuzs.enchantmentcontrol.impl.util.ExpressionEvaluatorImpl;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -11,8 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * Basic data holder for enchantments for properties not covered by tags in
- * {@link EnchantmentTags}.
+ * Basic data holder for enchantments for properties not covered by tags in {@link EnchantmentTags}.
  * <p>
  * All implementations of this interface are immutable (implemented via record).
  */
@@ -38,6 +38,16 @@ public interface EnchantmentData {
      * @return maximum enchantment level
      */
     int maxLevel();
+
+    /**
+     * @return minimum enchanting table cost formula
+     */
+    @Nullable ExpressionEvaluator minCost();
+
+    /**
+     * @return maximum enchanting table cost formula
+     */
+    @Nullable ExpressionEvaluator maxCost();
 
     /**
      * @return other enchantments that will match when checking for this enchantment

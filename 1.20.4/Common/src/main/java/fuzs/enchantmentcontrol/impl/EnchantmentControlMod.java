@@ -2,6 +2,7 @@ package fuzs.enchantmentcontrol.impl;
 
 import fuzs.enchantmentcontrol.api.v1.EnchantmentCategories;
 import fuzs.enchantmentcontrol.api.v1.data.EnchantmentDataHelper;
+import fuzs.enchantmentcontrol.api.v1.data.ExpressionEvaluator;
 import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentTags;
 import fuzs.enchantmentcontrol.impl.client.commands.EnchantmentDataCommand;
 import fuzs.enchantmentcontrol.impl.config.CommonConfig;
@@ -9,6 +10,7 @@ import fuzs.enchantmentcontrol.impl.handler.EnchantmentClassesCache;
 import fuzs.enchantmentcontrol.impl.handler.UnsafeHandler;
 import fuzs.enchantmentcontrol.impl.init.ModRegistry;
 import fuzs.enchantmentcontrol.impl.network.ClientboundEnchantmentDataMessage;
+import fuzs.enchantmentcontrol.impl.util.ExpressionEvaluatorImpl;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentDataImpl;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentDataManager;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
@@ -37,7 +39,15 @@ import java.util.stream.Collectors;
 
 public class EnchantmentControlMod extends EnchantmentControl implements ModConstructor {
     public static final NetworkHandlerV3 NETWORK = NetworkHandlerV3.builder(MOD_ID)
-            .registerClientbound(ClientboundEnchantmentDataMessage.class);
+            .registerClientbound(ClientboundEnchantmentDataMessage.class).registerSerializer(ExpressionEvaluator.class, (friendlyByteBuf, expressionEvaluator) -> {
+                friendlyByteBuf.writeBoolean(expressionEvaluator != null);
+                if (expressionEvaluator != null) {
+                    friendlyByteBuf.writeUtf(expressionEvaluator.getString());
+                }
+            }, friendlyByteBuf -> {
+                return friendlyByteBuf.readBoolean() ?
+                        ExpressionEvaluatorImpl.create(friendlyByteBuf.readUtf()) : null;
+            });
     public static final ConfigHolder CONFIG = ConfigHolder.builder(MOD_ID).common(CommonConfig.class);
 
     @Override

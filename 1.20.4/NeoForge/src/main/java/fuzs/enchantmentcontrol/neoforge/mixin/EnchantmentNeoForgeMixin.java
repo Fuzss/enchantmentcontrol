@@ -1,5 +1,6 @@
 package fuzs.enchantmentcontrol.neoforge.mixin;
 
+import fuzs.enchantmentcontrol.api.v1.data.ExpressionEvaluator;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.world.item.ItemStack;
@@ -13,17 +14,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * This mixin is dynamically applied to the enchantment class and all subclasses. The mixin config plugin expands the
  * targets property of the {@link Mixin} annotation at runtime and hacks the newly created class into the classloader.
  * <p>
- * All injectors are set to require 0 successful injections as not all subclasses will necessarily override every method
- * we want to inject into.
+ * All injectors are set to require zero successful injections as not all subclasses will necessarily override every
+ * method we want to inject into.
  * <p>
  * Also, all possible mappings (order is: NeoForge &amp; Fabric &amp; Forge) must be provided right here, as the
  * dynamically generated mixin class is a new class which will not have an entry in the refmap. Since the refmap is not
  * used the remap property is set to <code>false</code>.
  * <p>
  * This class must be copied into every subproject since the mixin package is in the mod loader specific package
- * (<code>fuzs.enchantmentcontrol.fabric.mixin</code> instead of <code>fuzs.enchantmentcontrol.mixin</code>) and
- * {@link Class#getResourceAsStream(String)} seems to be unable to load resources from a package that is not a
- * subpackage.
+ * (<code>fuzs.enchantmentcontrol.neoforge.mixin</code> instead of <code>fuzs.enchantmentcontrol.mixin</code>) and
+ * {@link Class#getResourceAsStream(String)} which we use seems to be unable to load resources from a package that is
+ * not a subpackage.
  */
 @Mixin(
         value = {
@@ -89,6 +90,36 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
 
     @SuppressWarnings("target")
     @Inject(
+            method = {"getMinCost(I)I", "method_8182(I)I", "m_6183_(I)I"},
+            at = @At("HEAD"),
+            cancellable = true,
+            require = 0,
+            remap = false
+    )
+    public void getMinCost(int level, CallbackInfoReturnable<Integer> callback) {
+        EnchantmentHolder.ifPresent(this, holder -> {
+            ExpressionEvaluator evaluator = holder.getEnchantmentData().minCost();
+            return evaluator != null ? (int) evaluator.with("x", level).evaluate() : null;
+        }, callback::setReturnValue);
+    }
+
+    @SuppressWarnings("target")
+    @Inject(
+            method = {"getMaxCost(I)I", "method_20742(I)I", "m_6175_(I)I"},
+            at = @At("HEAD"),
+            cancellable = true,
+            require = 0,
+            remap = false
+    )
+    public void getMaxCost(int level, CallbackInfoReturnable<Integer> callback) {
+        EnchantmentHolder.ifPresent(this, holder -> {
+            ExpressionEvaluator evaluator = holder.getEnchantmentData().maxCost();
+            return evaluator != null ? (int) evaluator.with("x", level).evaluate() : null;
+        }, callback::setReturnValue);
+    }
+
+    @SuppressWarnings("target")
+    @Inject(
             method = {
                     "canEnchant(Lnet/minecraft/world/item/ItemStack;)Z",
                     "method_8192(Lnet/minecraft/class_1799;)Z",
@@ -96,7 +127,11 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             }, at = @At("HEAD"), cancellable = true, require = 0, remap = false
     )
     public void canEnchant(ItemStack itemStack, CallbackInfoReturnable<Boolean> callback) {
-        EnchantmentHolder.ifPresent(this, holder -> itemStack.is(holder.getAnvilItemTag()), callback::setReturnValue, false);
+        EnchantmentHolder.ifPresent(this,
+                holder -> itemStack.is(holder.getAnvilItemTag()),
+                callback::setReturnValue,
+                false
+        );
     }
 
     @SuppressWarnings("target")
@@ -154,7 +189,8 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
             }, at = @At("HEAD"), cancellable = true, require = 0, remap = false
     )
     public void canApplyAtEnchantingTable(ItemStack itemStack, CallbackInfoReturnable<Boolean> callback) {
-        EnchantmentHolder.ifPresent(this, holder -> itemStack.is(holder.getEnchantingTableItemTag()),
+        EnchantmentHolder.ifPresent(this,
+                holder -> itemStack.is(holder.getEnchantingTableItemTag()),
                 callback::setReturnValue,
                 false
         );
