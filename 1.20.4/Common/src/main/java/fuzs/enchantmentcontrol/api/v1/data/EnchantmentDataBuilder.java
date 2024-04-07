@@ -4,6 +4,7 @@ import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentDataImpl;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An extension to {@link EnchantmentData} providing a builder format for data generation via
@@ -40,13 +41,13 @@ public interface EnchantmentDataBuilder extends EnchantmentData {
      * @param minCost the new minimum cost formula
      * @return the new enchantment data
      */
-    EnchantmentDataBuilder withMinCost(String minCost);
+    EnchantmentDataBuilder withMinCost(@Nullable EnchantmentCost minCost);
 
     /**
      * @param maxCost the new maximum cost formula
      * @return the new enchantment data
      */
-    EnchantmentDataBuilder withMaxCost(String maxCost);
+    EnchantmentDataBuilder withMaxCost(@Nullable EnchantmentCost maxCost);
 
     /**
      * @param aliases the new enchantment aliases

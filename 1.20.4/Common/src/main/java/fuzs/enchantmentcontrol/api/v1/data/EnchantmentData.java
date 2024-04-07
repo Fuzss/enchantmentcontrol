@@ -1,7 +1,6 @@
 package fuzs.enchantmentcontrol.api.v1.data;
 
 import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentTags;
-import fuzs.enchantmentcontrol.impl.util.ExpressionEvaluatorImpl;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -42,12 +41,12 @@ public interface EnchantmentData {
     /**
      * @return minimum enchanting table cost formula
      */
-    @Nullable ExpressionEvaluator minCost();
+    @Nullable EnchantmentCost minCost();
 
     /**
      * @return maximum enchanting table cost formula
      */
-    @Nullable ExpressionEvaluator maxCost();
+    @Nullable EnchantmentCost maxCost();
 
     /**
      * @return other enchantments that will match when checking for this enchantment

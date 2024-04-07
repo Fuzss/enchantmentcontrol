@@ -1,6 +1,6 @@
 package fuzs.enchantmentcontrol.fabric.mixin;
 
-import fuzs.enchantmentcontrol.api.v1.data.ExpressionEvaluator;
+import fuzs.enchantmentcontrol.api.v1.data.EnchantmentCost;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.world.item.ItemStack;
@@ -98,8 +98,8 @@ abstract class EnchantmentFabricMixin implements EnchantmentFeature {
     )
     public void getMinCost(int level, CallbackInfoReturnable<Integer> callback) {
         EnchantmentHolder.ifPresent(this, holder -> {
-            ExpressionEvaluator evaluator = holder.getEnchantmentData().minCost();
-            return evaluator != null ? (int) evaluator.with("x", level).evaluate() : null;
+            EnchantmentCost enchantmentCost = holder.getEnchantmentData().minCost();
+            return enchantmentCost != null ? enchantmentCost.calculate(level) : null;
         }, callback::setReturnValue);
     }
 
@@ -113,8 +113,8 @@ abstract class EnchantmentFabricMixin implements EnchantmentFeature {
     )
     public void getMaxCost(int level, CallbackInfoReturnable<Integer> callback) {
         EnchantmentHolder.ifPresent(this, holder -> {
-            ExpressionEvaluator evaluator = holder.getEnchantmentData().maxCost();
-            return evaluator != null ? (int) evaluator.with("x", level).evaluate() : null;
+            EnchantmentCost enchantmentCost = holder.getEnchantmentData().maxCost();
+            return enchantmentCost != null ? enchantmentCost.calculate(level) : null;
         }, callback::setReturnValue);
     }
 

@@ -4,12 +4,11 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fuzs.enchantmentcontrol.api.v1.data.EnchantmentCost;
 import fuzs.enchantmentcontrol.api.v1.data.EnchantmentData;
 import fuzs.enchantmentcontrol.api.v1.data.EnchantmentDataBuilder;
-import fuzs.enchantmentcontrol.api.v1.data.ExpressionEvaluator;
 import fuzs.enchantmentcontrol.impl.EnchantmentControlMod;
 import fuzs.enchantmentcontrol.impl.config.CommonConfig;
-import fuzs.enchantmentcontrol.impl.util.ExpressionEvaluatorImpl;
 import fuzs.puzzleslib.api.config.v3.json.GsonEnumHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -26,8 +25,8 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
                                   EquipmentSlot[] equipmentSlots,
                                   int minLevel,
                                   int maxLevel,
-                                  @Nullable ExpressionEvaluator minCost,
-                                  @Nullable ExpressionEvaluator maxCost,
+                                  @Nullable EnchantmentCost minCost,
+                                  @Nullable EnchantmentCost maxCost,
                                   List<Enchantment> aliases) implements EnchantmentDataBuilder {
     private static final Set<EquipmentSlot> ARMOR_SLOTS = Sets.immutableEnumSet(EquipmentSlot.FEET,
             EquipmentSlot.LEGS,
@@ -88,25 +87,25 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
     }
 
     @Override
-    public EnchantmentDataBuilder withMinCost(String minCost) {
+    public EnchantmentDataBuilder withMinCost(@Nullable EnchantmentCost minCost) {
         return new EnchantmentDataImpl(this.enchantmentCategory,
                 this.rarity,
                 this.equipmentSlots,
                 this.minLevel,
-                this.maxLevel, ExpressionEvaluatorImpl.create(minCost.replaceAll("\\s", "")),
+                this.maxLevel, minCost,
                 this.maxCost,
                 this.aliases
         );
     }
 
     @Override
-    public EnchantmentDataBuilder withMaxCost(String maxCost) {
+    public EnchantmentDataBuilder withMaxCost(@Nullable EnchantmentCost maxCost) {
         return new EnchantmentDataImpl(this.enchantmentCategory,
                 this.rarity,
                 this.equipmentSlots,
                 this.minLevel,
                 this.maxLevel,
-                this.minCost, ExpressionEvaluatorImpl.create(maxCost.replaceAll("\\s", "")),
+                this.minCost, maxCost,
                 this.aliases
         );
     }
@@ -141,10 +140,10 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
         jsonObject.addProperty("min_level", this.minLevel);
         jsonObject.addProperty("max_level", this.maxLevel);
         if (this.minCost != null) {
-            jsonObject.addProperty("min_cost", this.minCost.getString());
+            jsonObject.add("min_cost", ((EnchantmentCostImpl) this.minCost).toJson());
         }
         if (this.maxCost != null) {
-            jsonObject.addProperty("max_cost", this.maxCost.getString());
+            jsonObject.add("max_cost", ((EnchantmentCostImpl) this.maxCost).toJson());
         }
         JsonArray aliases = new JsonArray();
         for (Enchantment enchantment : this.aliases) {
@@ -165,18 +164,8 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
         }
         int minLevel = GsonHelper.getAsInt(jsonObject, "min_level");
         int maxLevel = GsonHelper.getAsInt(jsonObject, "max_level");
-        ExpressionEvaluator minCost;
-        if (jsonObject.has("min_cost")) {
-            minCost = ExpressionEvaluatorImpl.create(GsonHelper.getAsString(jsonObject, "min_cost"));
-        } else {
-            minCost = null;
-        }
-        ExpressionEvaluator maxCost;
-        if (jsonObject.has("max_cost")) {
-            maxCost = ExpressionEvaluatorImpl.create(GsonHelper.getAsString(jsonObject, "max_cost"));
-        } else {
-            maxCost = null;
-        }
+        EnchantmentCost minCost = EnchantmentCostImpl.fromJson(jsonObject, "min_cost");
+        EnchantmentCost maxCost = EnchantmentCostImpl.fromJson(jsonObject, "max_cost");
         JsonArray aliasesArray = GsonHelper.getAsJsonArray(jsonObject, "aliases", new JsonArray());
         List<Enchantment> aliases = new ArrayList<>();
         for (int i = 0; i < aliasesArray.size(); i++) {

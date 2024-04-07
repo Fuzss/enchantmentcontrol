@@ -1,6 +1,8 @@
 package fuzs.enchantmentcontrol.neoforge.mixin;
 
-import fuzs.enchantmentcontrol.api.v1.data.ExpressionEvaluator;
+import fuzs.enchantmentcontrol.api.v1.data.EnchantmentCost;
+import fuzs.enchantmentcontrol.impl.EnchantmentControlMod;
+import fuzs.enchantmentcontrol.impl.config.CommonConfig;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.world.item.ItemStack;
@@ -98,8 +100,8 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
     )
     public void getMinCost(int level, CallbackInfoReturnable<Integer> callback) {
         EnchantmentHolder.ifPresent(this, holder -> {
-            ExpressionEvaluator evaluator = holder.getEnchantmentData().minCost();
-            return evaluator != null ? (int) evaluator.with("x", level).evaluate() : null;
+            EnchantmentCost enchantmentCost = holder.getEnchantmentData().minCost();
+            return enchantmentCost != null ? enchantmentCost.calculate(level) : null;
         }, callback::setReturnValue);
     }
 
@@ -113,8 +115,8 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
     )
     public void getMaxCost(int level, CallbackInfoReturnable<Integer> callback) {
         EnchantmentHolder.ifPresent(this, holder -> {
-            ExpressionEvaluator evaluator = holder.getEnchantmentData().maxCost();
-            return evaluator != null ? (int) evaluator.with("x", level).evaluate() : null;
+            EnchantmentCost enchantmentCost = holder.getEnchantmentData().maxCost();
+            return enchantmentCost != null ? enchantmentCost.calculate(level) : null;
         }, callback::setReturnValue);
     }
 
@@ -180,6 +182,19 @@ abstract class EnchantmentNeoForgeMixin implements EnchantmentFeature {
     )
     public void isDiscoverable(CallbackInfoReturnable<Boolean> callback) {
         EnchantmentHolder.ifPresent(this, EnchantmentHolder::isDiscoverable, callback::setReturnValue, false);
+    }
+
+    @SuppressWarnings("target")
+    @Inject(
+            method = "isAllowedOnBooks()Z", at = @At("HEAD"), cancellable = true, require = 0, remap = false
+    )
+    public void isAllowedOnBooks(CallbackInfoReturnable<Boolean> callback) {
+        if (EnchantmentControlMod.CONFIG.getHolder(CommonConfig.class).isAvailable() &&
+                EnchantmentControlMod.CONFIG.get(CommonConfig.class).removeUnobtainableFromCreative) {
+            EnchantmentHolder.ifPresent(this, EnchantmentHolder::isAllowedOnBooks, callback::setReturnValue, false);
+        } else {
+            EnchantmentHolder.ifPresent(this, EnchantmentHolder::isAllowedOnBooks, callback::setReturnValue);
+        }
     }
 
     @SuppressWarnings("target")

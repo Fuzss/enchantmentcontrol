@@ -13,12 +13,13 @@ public class ModRegistry {
     private static final String ANVIL_ITEM_TAG_PREFIX = "enchantable_at_anvil";
     private static final String INCOMPATIBLE_ENCHANTMENT_TAG_PREFIX = "incompatible";
     static final BoundTagFactory TAGS = BoundTagFactory.make(EnchantmentControl.MOD_ID);
-    public static final TagKey<Enchantment> TRADEABLE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("tradeable");
-    public static final TagKey<Enchantment> TREASURE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("treasure");
-    public static final TagKey<Enchantment> CURSES_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("curses");
-    public static final TagKey<Enchantment> DISCOVERABLE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("discoverable");
-    public static final TagKey<Enchantment> UNOBTAINABLE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("unobtainable");
-    public static final TagKey<Enchantment> UNTOUCHED_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("untouched");
+    public static final TagKey<Enchantment> IS_TRADEABLE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("is_tradeable");
+    public static final TagKey<Enchantment> IS_TREASURE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("is_treasure");
+    public static final TagKey<Enchantment> IS_CURSE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("is_curse");
+    public static final TagKey<Enchantment> IS_DISCOVERABLE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("is_discoverable");
+    public static final TagKey<Enchantment> IS_ALLOWED_ON_BOOKS_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("is_allowed_on_books");
+    public static final TagKey<Enchantment> IS_UNOBTAINABLE_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("is_unobtainable");
+    public static final TagKey<Enchantment> IS_UNTOUCHED_ENCHANTMENT_TAG = TAGS.registerEnchantmentTag("is_untouched");
 
     public static void touch() {
         // NO-OP

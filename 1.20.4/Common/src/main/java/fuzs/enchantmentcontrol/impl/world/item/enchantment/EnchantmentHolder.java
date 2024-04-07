@@ -149,23 +149,27 @@ public final class EnchantmentHolder {
     }
 
     public boolean isUnobtainable() {
-        return this.is(EnchantmentTags.UNOBTAINABLE);
+        return this.is(EnchantmentTags.IS_UNOBTAINABLE);
     }
 
     public boolean isTreasureOnly() {
-        return this.is(EnchantmentTags.TREASURE);
+        return this.is(EnchantmentTags.IS_TREASURE);
     }
 
     public boolean isCurse() {
-        return this.is(EnchantmentTags.CURSES);
+        return this.is(EnchantmentTags.IS_CURSE);
     }
 
     public boolean isTradeable() {
-        return this.is(EnchantmentTags.TRADEABLE);
+        return this.is(EnchantmentTags.IS_TRADEABLE);
     }
 
     public boolean isDiscoverable() {
-        return this.is(EnchantmentTags.DISCOVERABLE);
+        return this.is(EnchantmentTags.IS_DISCOVERABLE);
+    }
+
+    public boolean isAllowedOnBooks() {
+        return this.is(EnchantmentTags.IS_ALLOWED_ON_BOOKS);
     }
 
     public boolean is(EnchantmentHolder holder) {

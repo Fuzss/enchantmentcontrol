@@ -19,6 +19,7 @@ import java.util.function.ToDoubleFunction;
  *     <li>Removal of the <code>functionName factor</code> syntax in favor of <code>functionName `(` expression `)`</code> to allow for zero argument functions</li>
  * </ul>
  */
+@Deprecated
 public final class ExpressionEvaluatorImpl implements ExpressionEvaluator {
     private final String str;
     private final Expression expression;

@@ -4,6 +4,7 @@ import fuzs.enchantmentcontrol.impl.EnchantmentControlMod;
 import fuzs.enchantmentcontrol.impl.config.CommonConfig;
 import fuzs.enchantmentcontrol.impl.util.ModEnchantmentHelper;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.world.item.EnchantedBookItem;
@@ -31,10 +32,21 @@ abstract class LootTableMixin {
             ObjectListIterator<ItemStack> iterator = items.iterator();
             while (iterator.hasNext()) {
                 ItemStack itemStack = iterator.next();
-                if (itemStack.isEnchanted() || itemStack.getItem() instanceof EnchantedBookItem) {
+                boolean isBook = itemStack.getItem() instanceof EnchantedBookItem;
+                if (isBook || itemStack.isEnchanted()) {
                     Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(itemStack);
                     boolean result = enchantments.keySet().removeIf(enchantment -> {
-                        return !((EnchantmentFeature) enchantment).enchantmentcontrol$isEnabled();
+                        if (!((EnchantmentFeature) enchantment).enchantmentcontrol$isEnabled()) {
+                            return true;
+                        }
+                        if (isBook) {
+                            EnchantmentHolder holder = ((EnchantmentFeature) enchantment).enchantmentcontrol$getHolder();
+                            if (holder != null && !holder.isAllowedOnBooks()) {
+                                return true;
+                            }
+                        }
+
+                        return false;
                     });
                     if (result) {
                         // custom implementation that turns enchanted books into normal books when there are no enchantments left

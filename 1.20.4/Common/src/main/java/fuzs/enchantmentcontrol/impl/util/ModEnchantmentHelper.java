@@ -1,6 +1,7 @@
 package fuzs.enchantmentcontrol.impl.util;
 
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentFeature;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -71,9 +72,13 @@ public class ModEnchantmentHelper {
     }
 
     public static boolean isBookWithDisabledEnchantments(ItemStack itemStack) {
-        if (itemStack.is(Items.ENCHANTED_BOOK)) {
+        if (itemStack.getItem() instanceof EnchantedBookItem) {
             for (Enchantment enchantment : EnchantmentHelper.getEnchantments(itemStack).keySet()) {
                 if (!((EnchantmentFeature) enchantment).enchantmentcontrol$isEnabled()) {
+                    return true;
+                }
+                EnchantmentHolder holder = ((EnchantmentFeature) enchantment).enchantmentcontrol$getHolder();
+                if (holder != null && !holder.isAllowedOnBooks()) {
                     return true;
                 }
             }

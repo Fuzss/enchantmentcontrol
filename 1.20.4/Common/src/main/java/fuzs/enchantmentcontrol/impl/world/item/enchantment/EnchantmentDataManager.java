@@ -6,7 +6,6 @@ import com.google.gson.JsonElement;
 import fuzs.enchantmentcontrol.api.v1.data.EnchantmentDataHelper;
 import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentTags;
 import fuzs.enchantmentcontrol.impl.EnchantmentControlMod;
-import fuzs.enchantmentcontrol.impl.handler.EnchantmentClassesCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -27,7 +26,7 @@ public final class EnchantmentDataManager extends SimpleJsonResourceReloadListen
         EnchantmentDataHelper.clearAll();
         for (EnchantmentHolder holder : EnchantmentHolder.values()) {
             // checking the tag here only seems to work on Forge-like, Fabric is handled when tags update
-            if (!holder.is(EnchantmentTags.UNTOUCHED)) {
+            if (!holder.is(EnchantmentTags.IS_UNTOUCHED)) {
                 JsonElement jsonElement = object.get(holder.getResourceLocation());
                 // every holder / enchantment must have a valid data entry since data is dynamically generated based on the enchantment registry
                 Objects.requireNonNull(jsonElement, "enchantment data for " + holder.getResourceLocation() + " is null");

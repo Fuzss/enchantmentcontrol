@@ -17,10 +17,10 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public final class EnchantmentClassesCache {
-    public static final String HIDDEN_MOD_ROOT_DIRECTORY_NAME = "." + EnchantmentControl.MOD_ID;
-    public static final Path HIDDEN_MOD_ROOT_PATH = ModLoaderEnvironment.INSTANCE.getGameDirectory()
-            .resolve(HIDDEN_MOD_ROOT_DIRECTORY_NAME);
-    private static final Path CACHE_FILE_PATH = HIDDEN_MOD_ROOT_PATH.resolve("cache");
+    public static final String MOD_ROOT_DIRECTORY_NAME = EnchantmentControl.MOD_ID;
+    public static final Path MOD_ROOT_PATH = ModLoaderEnvironment.INSTANCE.getGameDirectory()
+            .resolve(MOD_ROOT_DIRECTORY_NAME);
+    private static final Path CACHE_FILE_PATH = ModLoaderEnvironment.INSTANCE.getConfigDirectory().resolve("cache");
     private static final String KEY_MAPPINGS = "namespace:";
     private static boolean failedLoad;
 
@@ -30,7 +30,7 @@ public final class EnchantmentClassesCache {
 
     public static void save() {
         try {
-            HIDDEN_MOD_ROOT_PATH.toFile().mkdirs();
+            ModLoaderEnvironment.INSTANCE.getConfigDirectory().toFile().mkdirs();
             try (PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(CACHE_FILE_PATH.toFile()),
                     StandardCharsets.UTF_8
             ))) {

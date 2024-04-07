@@ -17,36 +17,41 @@ public final class EnchantmentTags {
      * <p>
      * Equivalent to {@link Enchantment#isTradeable()}.
      */
-    public static final TagKey<Enchantment> TRADEABLE = ModRegistry.TRADEABLE_ENCHANTMENT_TAG;
+    public static final TagKey<Enchantment> IS_TRADEABLE = ModRegistry.IS_TRADEABLE_ENCHANTMENT_TAG;
     /**
      * Enchantments that cannot be obtained at an enchanting table. They are usually found in chest loot, or obtained
      * from trading. Librarian villagers will charge double for these.
      * <p>
      * Equivalent to {@link Enchantment#isTreasureOnly()}.
      */
-    public static final TagKey<Enchantment> TREASURE = ModRegistry.TREASURE_ENCHANTMENT_TAG;
+    public static final TagKey<Enchantment> IS_TREASURE = ModRegistry.IS_TREASURE_ENCHANTMENT_TAG;
     /**
      * Enchantments that have negative effects, show their name colored red on tooltips and cannot be removed from an
      * item via repairing and in a grindstone.
      * <p>
      * Equivalent to {@link Enchantment#isCurse()}.
      */
-    public static final TagKey<Enchantment> CURSES = ModRegistry.CURSES_ENCHANTMENT_TAG;
+    public static final TagKey<Enchantment> IS_CURSE = ModRegistry.IS_CURSE_ENCHANTMENT_TAG;
     /**
      * Enchantments that can be selected for randomly enchanted loot.
      * <p>
      * Equivalent to {@link Enchantment#isDiscoverable()}.
      */
-    public static final TagKey<Enchantment> DISCOVERABLE = ModRegistry.DISCOVERABLE_ENCHANTMENT_TAG;
+    public static final TagKey<Enchantment> IS_DISCOVERABLE = ModRegistry.IS_DISCOVERABLE_ENCHANTMENT_TAG;
+    /**
+     * Enchantments that can be put on enchanted books when enchanting. Does not affect anvil mechanics nor enchanted
+     * books generated as part of loot.
+     */
+    public static final TagKey<Enchantment> IS_ALLOWED_ON_BOOKS = ModRegistry.IS_ALLOWED_ON_BOOKS_ENCHANTMENT_TAG;
     /**
      * Enchantments that are disabled in-game. They will not be accessible in commands, will not be added to any loot,
      * will not show up in trades, in the creative inventory, and when still somehow obtained will not have any effect.
      */
-    public static final TagKey<Enchantment> UNOBTAINABLE = ModRegistry.UNOBTAINABLE_ENCHANTMENT_TAG;
+    public static final TagKey<Enchantment> IS_UNOBTAINABLE = ModRegistry.IS_UNOBTAINABLE_ENCHANTMENT_TAG;
     /**
      * Enchantments that will not have any changes at all applied by this mod.
      */
-    public static final TagKey<Enchantment> UNTOUCHED = ModRegistry.UNTOUCHED_ENCHANTMENT_TAG;
+    public static final TagKey<Enchantment> IS_UNTOUCHED = ModRegistry.IS_UNTOUCHED_ENCHANTMENT_TAG;
 
     private EnchantmentTags() {
         // NO-OP

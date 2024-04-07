@@ -15,6 +15,7 @@ import java.util.function.ToDoubleFunction;
  * The idea of making enchantment costs configurable via such an approach is taken from the <a
  * href="https://github.com/Shadows-of-Fire/Apotheosis">Apotheosis</a> mod.
  */
+@Deprecated
 public interface ExpressionEvaluator {
 
     /**

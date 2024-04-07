@@ -1,8 +1,8 @@
 package fuzs.enchantmentcontrol.impl;
 
 import fuzs.enchantmentcontrol.api.v1.EnchantmentCategories;
+import fuzs.enchantmentcontrol.api.v1.data.EnchantmentCost;
 import fuzs.enchantmentcontrol.api.v1.data.EnchantmentDataHelper;
-import fuzs.enchantmentcontrol.api.v1.data.ExpressionEvaluator;
 import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentTags;
 import fuzs.enchantmentcontrol.impl.client.commands.EnchantmentDataCommand;
 import fuzs.enchantmentcontrol.impl.config.CommonConfig;
@@ -10,7 +10,7 @@ import fuzs.enchantmentcontrol.impl.handler.EnchantmentClassesCache;
 import fuzs.enchantmentcontrol.impl.handler.UnsafeHandler;
 import fuzs.enchantmentcontrol.impl.init.ModRegistry;
 import fuzs.enchantmentcontrol.impl.network.ClientboundEnchantmentDataMessage;
-import fuzs.enchantmentcontrol.impl.util.ExpressionEvaluatorImpl;
+import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentCostImpl;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentDataImpl;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentDataManager;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
@@ -23,9 +23,12 @@ import fuzs.puzzleslib.api.event.v1.server.SyncDataPackContentsCallback;
 import fuzs.puzzleslib.api.event.v1.server.TagsUpdatedCallback;
 import fuzs.puzzleslib.api.network.v3.NetworkHandlerV3;
 import fuzs.puzzleslib.api.network.v3.PlayerSet;
+import fuzs.puzzleslib.api.network.v3.serialization.MessageSerializer;
+import fuzs.puzzleslib.api.network.v3.serialization.MessageSerializers;
 import fuzs.puzzleslib.api.resources.v1.DynamicPackResources;
 import fuzs.puzzleslib.api.resources.v1.PackResourcesHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
@@ -39,15 +42,26 @@ import java.util.stream.Collectors;
 
 public class EnchantmentControlMod extends EnchantmentControl implements ModConstructor {
     public static final NetworkHandlerV3 NETWORK = NetworkHandlerV3.builder(MOD_ID)
-            .registerClientbound(ClientboundEnchantmentDataMessage.class).registerSerializer(ExpressionEvaluator.class, (friendlyByteBuf, expressionEvaluator) -> {
-                friendlyByteBuf.writeBoolean(expressionEvaluator != null);
-                if (expressionEvaluator != null) {
-                    friendlyByteBuf.writeUtf(expressionEvaluator.getString());
-                }
-            }, friendlyByteBuf -> {
-                return friendlyByteBuf.readBoolean() ?
-                        ExpressionEvaluatorImpl.create(friendlyByteBuf.readUtf()) : null;
-            });
+            .registerClientbound(ClientboundEnchantmentDataMessage.class)
+            .registerSerializer(EnchantmentCost.class,
+                    (FriendlyByteBuf friendlyByteBuf, EnchantmentCost enchantmentCost) -> {
+                        friendlyByteBuf.writeBoolean(enchantmentCost != null);
+                        if (enchantmentCost != null) {
+                            MessageSerializer<EnchantmentCostImpl> serializer = MessageSerializers.findByType(
+                                    EnchantmentCostImpl.class);
+                            serializer.write(friendlyByteBuf, (EnchantmentCostImpl) enchantmentCost);
+                        }
+                    },
+                    (FriendlyByteBuf friendlyByteBuf) -> {
+                        if (friendlyByteBuf.readBoolean()) {
+                            MessageSerializer<EnchantmentCostImpl> serializer = MessageSerializers.findByType(
+                                    EnchantmentCostImpl.class);
+                            return serializer.read(friendlyByteBuf);
+                        } else {
+                            return null;
+                        }
+                    }
+            );
     public static final ConfigHolder CONFIG = ConfigHolder.builder(MOD_ID).common(CommonConfig.class);
 
     @Override
@@ -78,7 +92,7 @@ public class EnchantmentControlMod extends EnchantmentControl implements ModCons
             // this happens before data pack contents are synced, so we don't need it on the client
             if (!client) {
                 EnchantmentHolder.forEach(holder -> {
-                    if (holder.is(EnchantmentTags.UNTOUCHED)) {
+                    if (holder.is(EnchantmentTags.IS_UNTOUCHED)) {
                         holder.setEnchantmentData(null);
                     }
                 });

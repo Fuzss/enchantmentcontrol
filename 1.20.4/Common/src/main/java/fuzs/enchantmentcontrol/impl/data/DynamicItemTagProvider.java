@@ -1,8 +1,8 @@
 package fuzs.enchantmentcontrol.impl.data;
 
-import fuzs.enchantmentcontrol.impl.CommonAbstractions;
 import fuzs.enchantmentcontrol.impl.init.EnchantmentCategoryTagsImpl;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
+import fuzs.puzzleslib.api.core.v1.CommonAbstractions;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
 import fuzs.puzzleslib.api.data.v2.tags.AbstractTagAppender;
 import fuzs.puzzleslib.api.data.v2.tags.AbstractTagProvider;
@@ -33,7 +33,7 @@ public class DynamicItemTagProvider extends AbstractTagProvider<Item> {
             }
             addAllMatchingItems(this.add(holder.getEnchantingTableItemTag()), (Item item) -> {
                 // we do not use our dynamic enchantment category tags here since Forge overrides that with a method which allows for additional items
-                return CommonAbstractions.canApplyAtEnchantingTable(enchantment, item.getDefaultInstance());
+                return CommonAbstractions.INSTANCE.canApplyAtEnchantingTable(enchantment, item.getDefaultInstance());
             });
             addAllMatchingItems(this.add(holder.getAnvilItemTag()), (Item item) -> {
                 return enchantment.canEnchant(item.getDefaultInstance());
@@ -45,11 +45,6 @@ public class DynamicItemTagProvider extends AbstractTagProvider<Item> {
                 addAllMatchingItems(this.add(tagKey), enchantmentCategory::canEnchant);
             }
         }
-    }
-
-    @Override
-    public AbstractTagAppender<Item> add(TagKey<Item> tagKey) {
-        return super.add(tagKey).setReplace(this.skipHolderValidation);
     }
 
     public static void addAllMatchingItems(AbstractTagAppender<Item> tagAppender, Predicate<Item> predicate) {

@@ -2,6 +2,7 @@ package fuzs.enchantmentcontrol.impl.data;
 
 import fuzs.enchantmentcontrol.api.v1.tags.EnchantmentTags;
 import fuzs.enchantmentcontrol.impl.world.item.enchantment.EnchantmentHolder;
+import fuzs.puzzleslib.api.core.v1.CommonAbstractions;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
 import fuzs.puzzleslib.api.data.v2.tags.AbstractTagAppender;
 import fuzs.puzzleslib.api.data.v2.tags.AbstractTagProvider;
@@ -23,10 +24,11 @@ public class DynamicEnchantmentTagProvider extends AbstractTagProvider<Enchantme
 
     @Override
     public void addTags(HolderLookup.Provider provider) {
-        this.buildEnchantmentTag(EnchantmentTags.DISCOVERABLE, Enchantment::isDiscoverable);
-        this.buildEnchantmentTag(EnchantmentTags.TREASURE, Enchantment::isTreasureOnly);
-        this.buildEnchantmentTag(EnchantmentTags.TRADEABLE, Enchantment::isTradeable);
-        this.buildEnchantmentTag(EnchantmentTags.CURSES, Enchantment::isCurse);
+        this.buildEnchantmentTag(EnchantmentTags.IS_TREASURE, Enchantment::isTreasureOnly);
+        this.buildEnchantmentTag(EnchantmentTags.IS_CURSE, Enchantment::isCurse);
+        this.buildEnchantmentTag(EnchantmentTags.IS_TRADEABLE, Enchantment::isTradeable);
+        this.buildEnchantmentTag(EnchantmentTags.IS_DISCOVERABLE, Enchantment::isDiscoverable);
+        this.buildEnchantmentTag(EnchantmentTags.IS_ALLOWED_ON_BOOKS, CommonAbstractions.INSTANCE::isAllowedOnBooks);
         for (EnchantmentHolder holder : EnchantmentHolder.values()) {
             Enchantment enchantment = holder.getEnchantment();
             if (!this.skipHolderValidation) {
@@ -52,11 +54,6 @@ public class DynamicEnchantmentTagProvider extends AbstractTagProvider<Enchantme
                 tagAppender.add(enchantment);
             }
         }
-    }
-
-    @Override
-    public AbstractTagAppender<Enchantment> add(TagKey<Enchantment> tagKey) {
-        return super.add(tagKey).setReplace(this.skipHolderValidation);
     }
 
     public static DataProviderContext.Factory create(boolean skipHolderValidation) {

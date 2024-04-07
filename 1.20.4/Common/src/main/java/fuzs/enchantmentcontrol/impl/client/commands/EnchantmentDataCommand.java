@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 
 public class EnchantmentDataCommand {
     private static final String EXPORT_DIRECTORY = "export";
-    private static final Path ENCHANTMENT_DATA_EXPORT_PATH = EnchantmentClassesCache.HIDDEN_MOD_ROOT_PATH.resolve(
+    private static final Path ENCHANTMENT_DATA_EXPORT_PATH = EnchantmentClassesCache.MOD_ROOT_PATH.resolve(
             EXPORT_DIRECTORY);
     private static final DynamicCommandExceptionType ERROR_FAILED_EXPORT = new DynamicCommandExceptionType(object -> Component.literal(
             "Running enchantment data providers failed: " + object));
@@ -41,14 +41,13 @@ public class EnchantmentDataCommand {
         };
     }
 
-    ;
-
     public static int triggerExport(Consumer<Component> feedbackConsumer, Consumer<Component> errorConsumer) throws CommandSyntaxException {
         if (EnchantmentClassesCache.isFailedLoad()) {
             throw ERROR_FAILED_EXPORT.create("Invalid configuration present, please restart your game");
         } else {
             // currently only a client command since initially implemented this way, too lazy to change that right now
             Util.ioPool().execute(() -> {
+                EnchantmentClassesCache.MOD_ROOT_PATH.toFile().mkdirs();
                 deleteExistingExportDirectory();
                 DataProviderContext context = DataProviderContext.fromModId(EnchantmentControl.MOD_ID,
                         ENCHANTMENT_DATA_EXPORT_PATH
@@ -67,7 +66,7 @@ public class EnchantmentDataCommand {
 
                 feedbackConsumer.accept(Component.literal("Exported enchantment data at ")
                         .append(Component.literal(
-                                        File.separator + EnchantmentClassesCache.HIDDEN_MOD_ROOT_DIRECTORY_NAME +
+                                        File.separator + EnchantmentClassesCache.MOD_ROOT_DIRECTORY_NAME +
                                                 File.separator + EXPORT_DIRECTORY)
                                 .withStyle(ChatFormatting.UNDERLINE)
                                 .withStyle(arg -> arg.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE,
