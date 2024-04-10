@@ -14,20 +14,20 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(EnchantmentHelper.class)
 abstract class EnchantmentHelperMixin {
     @Unique
-    private static boolean enchantmentcontrol$recursiveItemEnchantmentLevelCall;
+    private static final ThreadLocal<Boolean> ENCHANTMENTCONTROL$RECURSIVE_ITEM_ENCHANTMENT_LEVEL_CALL = new ThreadLocal<>();
 
     @ModifyReturnValue(method = "getItemEnchantmentLevel", at = @At("TAIL"))
     private static int getItemEnchantmentLevel(int enchantmentLevel, Enchantment enchantment, ItemStack itemStack) {
         if (!((EnchantmentFeature) enchantment).enchantmentcontrol$isEnabled()) {
             enchantmentLevel = 0;
         }
-        if (enchantmentLevel == 0 && !enchantmentcontrol$recursiveItemEnchantmentLevelCall) {
+        if (enchantmentLevel == 0 && !ENCHANTMENTCONTROL$RECURSIVE_ITEM_ENCHANTMENT_LEVEL_CALL.get()) {
             EnchantmentHolder holder = ((EnchantmentFeature) enchantment).enchantmentcontrol$getHolder();
             if (holder != null) {
                 for (Enchantment alias : holder.getEnchantmentData().aliases()) {
-                    enchantmentcontrol$recursiveItemEnchantmentLevelCall = true;
+                    ENCHANTMENTCONTROL$RECURSIVE_ITEM_ENCHANTMENT_LEVEL_CALL.set(true);;
                     enchantmentLevel = getItemEnchantmentLevel(alias, itemStack);
-                    enchantmentcontrol$recursiveItemEnchantmentLevelCall = false;
+                    ENCHANTMENTCONTROL$RECURSIVE_ITEM_ENCHANTMENT_LEVEL_CALL.set(false);
                     if (enchantmentLevel > 0) {
                         // do not go above max level for original enchantment, some calculation based on level might run into issues
                         enchantmentLevel = Math.min(enchantment.getMaxLevel(), enchantmentLevel);

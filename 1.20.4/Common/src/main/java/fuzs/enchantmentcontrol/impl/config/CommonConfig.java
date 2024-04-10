@@ -10,7 +10,7 @@ public class CommonConfig implements ConfigCore {
                     "Will have no effect in-game with the default vanilla configuration."
             }
     )
-    public boolean unlockArmorEquipmentSlots = true;
+    public boolean abstractEquipmentSlots = true;
     @Config(description = "Prevent disabled enchantments from showing up on enchanted items in loot (e.g. mob drops or generated chests).")
     public boolean removeUnobtainableFromLoot = true;
     @Config(description = "Prevent enchanted books with disabled enchantments from being added to the creative mode inventory.")

@@ -1,6 +1,5 @@
 package fuzs.enchantmentcontrol.impl.world.item.enchantment;
 
-import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -18,7 +17,10 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
                                   Enchantment.Rarity rarity,
@@ -28,11 +30,6 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
                                   @Nullable EnchantmentCost minCost,
                                   @Nullable EnchantmentCost maxCost,
                                   List<Enchantment> aliases) implements EnchantmentDataBuilder {
-    private static final Set<EquipmentSlot> ARMOR_SLOTS = Sets.immutableEnumSet(EquipmentSlot.FEET,
-            EquipmentSlot.LEGS,
-            EquipmentSlot.CHEST,
-            EquipmentSlot.HEAD
-    );
 
     @Override
     public EnchantmentDataImpl withRarity(Enchantment.Rarity rarity) {
@@ -92,7 +89,8 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
                 this.rarity,
                 this.equipmentSlots,
                 this.minLevel,
-                this.maxLevel, minCost,
+                this.maxLevel,
+                minCost,
                 this.maxCost,
                 this.aliases
         );
@@ -105,7 +103,8 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
                 this.equipmentSlots,
                 this.minLevel,
                 this.maxLevel,
-                this.minCost, maxCost,
+                this.minCost,
+                maxCost,
                 this.aliases
         );
     }
@@ -132,11 +131,16 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
     public JsonElement toJson() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("rarity", this.rarity.name());
-        JsonArray equipmentSlots = new JsonArray();
-        for (EquipmentSlot equipmentSlot : this.equipmentSlots) {
-            equipmentSlots.add(equipmentSlot.name());
+        if (!EnchantmentControlMod.CONFIG.getHolder(CommonConfig.class).isAvailable() ||
+                EnchantmentControlMod.CONFIG.get(CommonConfig.class).abstractEquipmentSlots) {
+            jsonObject.addProperty("type", EnchantmentType.fromSlots(this.equipmentSlots).name());
+        } else {
+            JsonArray equipmentSlots = new JsonArray();
+            for (EquipmentSlot equipmentSlot : this.equipmentSlots) {
+                equipmentSlots.add(equipmentSlot.name());
+            }
+            jsonObject.add("slots", equipmentSlots);
         }
-        jsonObject.add("slots", equipmentSlots);
         jsonObject.addProperty("min_level", this.minLevel);
         jsonObject.addProperty("max_level", this.maxLevel);
         if (this.minCost != null) {
@@ -145,22 +149,30 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
         if (this.maxCost != null) {
             jsonObject.add("max_cost", ((EnchantmentCostImpl) this.maxCost).toJson());
         }
-        JsonArray aliases = new JsonArray();
-        for (Enchantment enchantment : this.aliases) {
-            aliases.add(BuiltInRegistries.ENCHANTMENT.getKey(enchantment).toString());
+        if (!this.aliases.isEmpty()) {
+            JsonArray aliases = new JsonArray();
+            for (Enchantment enchantment : this.aliases) {
+                aliases.add(BuiltInRegistries.ENCHANTMENT.getKey(enchantment).toString());
+            }
+            jsonObject.add("aliases", aliases);
         }
-        jsonObject.add("aliases", aliases);
         return jsonObject;
     }
 
     public static EnchantmentData fromJson(EnchantmentHolder holder, JsonElement jsonElement) {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         Enchantment.Rarity rarity = GsonEnumHelper.getAsEnum(jsonObject, "rarity", Enchantment.Rarity.class);
-        JsonArray equipmentSlotsArray = GsonHelper.getAsJsonArray(jsonObject, "slots");
-        EquipmentSlot[] equipmentSlots = new EquipmentSlot[equipmentSlotsArray.size()];
-        for (int i = 0; i < equipmentSlotsArray.size(); i++) {
-            String equipmentSlot = GsonHelper.convertToString(equipmentSlotsArray.get(i), "equipment_slot");
-            equipmentSlots[i] = GsonEnumHelper.convertToEnum(equipmentSlot, EquipmentSlot.class);
+        EquipmentSlot[] equipmentSlots;
+        // prefer defining individual slots over slot types
+        if (jsonObject.has("slots")) {
+            JsonArray equipmentSlotsArray = GsonHelper.getAsJsonArray(jsonObject, "slots");
+            equipmentSlots = new EquipmentSlot[equipmentSlotsArray.size()];
+            for (int i = 0; i < equipmentSlotsArray.size(); i++) {
+                String equipmentSlot = GsonHelper.convertToString(equipmentSlotsArray.get(i), "equipment_slot");
+                equipmentSlots[i] = GsonEnumHelper.convertToEnum(equipmentSlot, EquipmentSlot.class);
+            }
+        } else {
+            equipmentSlots = GsonEnumHelper.getAsEnum(jsonObject, "type", EnchantmentType.class).getSlots();
         }
         int minLevel = GsonHelper.getAsInt(jsonObject, "min_level");
         int maxLevel = GsonHelper.getAsInt(jsonObject, "max_level");
@@ -197,33 +209,12 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
         }
         return new EnchantmentDataImpl(enchantment.category,
                 enchantment.rarity,
-                getAndExpandSlots(enchantment),
+                enchantment.slots,
                 enchantment.getMinLevel(),
                 enchantment.getMaxLevel(),
                 null,
                 null,
                 Collections.emptyList()
         );
-    }
-
-    private static EquipmentSlot[] getAndExpandSlots(Enchantment enchantment) {
-        EquipmentSlot[] slots = enchantment.slots;
-        if (!EnchantmentControlMod.CONFIG.getHolder(CommonConfig.class).isAvailable() ||
-                EnchantmentControlMod.CONFIG.get(CommonConfig.class).unlockArmorEquipmentSlots) {
-            int armorSlots = 0;
-            for (EquipmentSlot slot : slots) {
-                if (slot.isArmor()) armorSlots++;
-            }
-            // some armor enchantments are locked to a single equipment slot,
-            // which has no effect in vanilla since they usually can only go on items for that slot
-            // but when a user adds other armor items to the enchantment it will not work due to the slot restriction,
-            // so lift the restriction by default as it will not have any effect in-game with the vanilla configuration
-            if (armorSlots > 0 && armorSlots < 4) {
-                Set<EquipmentSlot> set = EnumSet.copyOf(Arrays.asList(slots));
-                set.addAll(ARMOR_SLOTS);
-                slots = set.toArray(EquipmentSlot[]::new);
-            }
-        }
-        return slots;
     }
 }
