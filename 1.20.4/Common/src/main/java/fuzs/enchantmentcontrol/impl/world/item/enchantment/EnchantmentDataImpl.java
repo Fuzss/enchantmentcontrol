@@ -1,5 +1,6 @@
 package fuzs.enchantmentcontrol.impl.world.item.enchantment;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -141,8 +142,12 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
             }
             jsonObject.add("slots", equipmentSlots);
         }
-        jsonObject.addProperty("min_level", this.minLevel);
-        jsonObject.addProperty("max_level", this.maxLevel);
+        if (this.minLevel > 1) {
+            jsonObject.addProperty("min_level", this.minLevel);
+        }
+        if (this.maxLevel > 1) {
+            jsonObject.addProperty("max_level", this.maxLevel);
+        }
         if (this.minCost != null) {
             jsonObject.add("min_cost", ((EnchantmentCostImpl) this.minCost).toJson());
         }
@@ -156,6 +161,7 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
             }
             jsonObject.add("aliases", aliases);
         }
+
         return jsonObject;
     }
 
@@ -174,8 +180,8 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
         } else {
             equipmentSlots = GsonEnumHelper.getAsEnum(jsonObject, "type", EnchantmentType.class).getSlots();
         }
-        int minLevel = GsonHelper.getAsInt(jsonObject, "min_level");
-        int maxLevel = GsonHelper.getAsInt(jsonObject, "max_level");
+        int minLevel = GsonHelper.getAsInt(jsonObject, "min_level", 1);
+        int maxLevel = GsonHelper.getAsInt(jsonObject, "max_level", 1);
         EnchantmentCost minCost = EnchantmentCostImpl.fromJson(jsonObject, "min_cost");
         EnchantmentCost maxCost = EnchantmentCostImpl.fromJson(jsonObject, "max_cost");
         JsonArray aliasesArray = GsonHelper.getAsJsonArray(jsonObject, "aliases", new JsonArray());
@@ -188,6 +194,7 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
                 throw new IllegalArgumentException("Missing reference: " + resourceLocation);
             }
         }
+
         return new EnchantmentDataImpl(holder.getTagBasedEnchantmentCategory(),
                 rarity,
                 equipmentSlots,
@@ -195,7 +202,7 @@ public record EnchantmentDataImpl(EnchantmentCategory enchantmentCategory,
                 maxLevel,
                 minCost,
                 maxCost,
-                List.copyOf(aliases)
+                ImmutableList.copyOf(aliases)
         );
     }
 

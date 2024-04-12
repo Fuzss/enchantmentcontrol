@@ -15,11 +15,13 @@ public class ModEnchantmentDataProvider extends AbstractEnchantmentDataProvider 
     @Override
     public void addEnchantmentData() {
         // only manually enabled for testing
-        this.add(Enchantments.BLOCK_FORTUNE,
-                EnchantmentDataBuilder.fromEnchantment(Enchantments.BLOCK_FORTUNE)
-                        // values copied from efficiency enchantment in Minecraft 1.20.5
-                        .withMinCost(EnchantmentCost.dynamicCost(1, 10))
-                        .withMaxCost(EnchantmentCost.dynamicCost(51, 10))
+        this.add(Enchantments.BLOCK_FORTUNE, EnchantmentDataBuilder.fromEnchantment(Enchantments.BLOCK_FORTUNE)
+                // values copied from efficiency enchantment in Minecraft 1.20.5
+                .withMinCost(EnchantmentCost.dynamicCost(1, 10))
+                .withMaxCost(EnchantmentCost.dynamicCost(51, 10))
+                .withAliases(Enchantments.MENDING));
+        this.add(Enchantments.MENDING,
+                EnchantmentDataBuilder.fromEnchantment(Enchantments.MENDING).withAliases(Enchantments.BLOCK_FORTUNE)
         );
     }
 }

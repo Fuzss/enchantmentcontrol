@@ -14,7 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(EnchantmentHelper.class)
 abstract class EnchantmentHelperMixin {
     @Unique
-    private static final ThreadLocal<Boolean> ENCHANTMENTCONTROL$RECURSIVE_ITEM_ENCHANTMENT_LEVEL_CALL = new ThreadLocal<>();
+    private static final ThreadLocal<Boolean> ENCHANTMENTCONTROL$RECURSIVE_ITEM_ENCHANTMENT_LEVEL_CALL = ThreadLocal.withInitial(
+            () -> false);
 
     @ModifyReturnValue(method = "getItemEnchantmentLevel", at = @At("TAIL"))
     private static int getItemEnchantmentLevel(int enchantmentLevel, Enchantment enchantment, ItemStack itemStack) {
@@ -25,7 +26,7 @@ abstract class EnchantmentHelperMixin {
             EnchantmentHolder holder = ((EnchantmentFeature) enchantment).enchantmentcontrol$getHolder();
             if (holder != null) {
                 for (Enchantment alias : holder.getEnchantmentData().aliases()) {
-                    ENCHANTMENTCONTROL$RECURSIVE_ITEM_ENCHANTMENT_LEVEL_CALL.set(true);;
+                    ENCHANTMENTCONTROL$RECURSIVE_ITEM_ENCHANTMENT_LEVEL_CALL.set(true);
                     enchantmentLevel = getItemEnchantmentLevel(alias, itemStack);
                     ENCHANTMENTCONTROL$RECURSIVE_ITEM_ENCHANTMENT_LEVEL_CALL.set(false);
                     if (enchantmentLevel > 0) {
@@ -36,6 +37,7 @@ abstract class EnchantmentHelperMixin {
                 }
             }
         }
+
         return enchantmentLevel;
     }
 
